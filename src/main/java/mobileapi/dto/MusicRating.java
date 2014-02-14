@@ -1,13 +1,23 @@
-package dto;
+package mobileapi.dto;
 
 /**
  * Created by virtuozzo on 14.02.14.
  */
-public class Favourites {
+public class MusicRating {
+
     private long userId;
     private long musicId;
+    private int value;
     private long dateTime;
 
+
+    public long getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(long dateTime) {
+        this.dateTime = dateTime;
+    }
 
     public long getUserId() {
         return userId;
@@ -25,14 +35,13 @@ public class Favourites {
         this.musicId = musicId;
     }
 
-    public long getDateTime() {
-        return dateTime;
+    public int getValue() {
+        return value;
     }
 
-    public void setDateTime(long dateTime) {
-        this.dateTime = dateTime;
+    public void setValue(int value) {
+        this.value = value;
     }
-
 
 
 

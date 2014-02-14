@@ -1,9 +1,9 @@
-package dto;
+package mobileapi.dto;
 
 /**
  * Created by virtuozzo on 14.02.14.
  */
-public class User {
+public class Perfomer {
     private long id;
     private String name;
 
