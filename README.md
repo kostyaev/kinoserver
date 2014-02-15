@@ -1,7 +1,7 @@
 KinoServer
 ==========
 
-* <https://github.com/cybern223/kinoserver/wiki>
+* (Wiki)[https://github.com/cybern223/kinoserver/wiki]
 
 @TODO
 ---------
