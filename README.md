@@ -3,7 +3,7 @@ KinoServer
 
 * <https://github.com/cybern223/kinoserver/wiki>
 
-TODO list
+@TODO
 ---------
 * Оптимизировать парсер stcollect (с помощью потоков)
 * Оптимизировать парсер kinopoisk (с помощью потоков)
