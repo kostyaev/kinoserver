@@ -1,4 +1,4 @@
-package kinopoisk;
+package parsers.models;
 
 
 public class Soundtrack {

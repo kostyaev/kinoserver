@@ -1,9 +1,11 @@
-package kinopoisk;
+package parsers.kinopoisk;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import parsers.models.Movie;
+import parsers.models.Soundtrack;
 
 import java.io.*;
 import java.net.URL;
@@ -13,7 +15,7 @@ import java.util.List;
 
 public class Parser {
 
-    public static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
+    public static final String BASE_ADDRESS = "http://www.parsers.kinopoisk.ru";
     public static HashMap<String,Movie> movieLibrary;
 
 
@@ -32,7 +34,7 @@ public class Parser {
 
     public static void parse() throws IOException {
         movieLibrary = new HashMap<String, Movie>();
-        String startURL = "http://www.kinopoisk.ru/level/10/ser/a%3A6%3A%7Bs%3A10%3A%22soundtrack%22%3Bs%3A2%3A%22ok%22%3Bs%3A4%3A%22what%22%3Bs%3A7%3A%22content%22%3Bs%3A3%3A%22all%22%3Bs%3A2%3A%22ok%22%3Bs%3A5%3A%22count%22%3Ba%3A1%3A%7Bs%3A7%3A%22content%22%3Bs%3A4%3A%222460%22%3B%7Ds%3A5%3A%22order%22%3Bs%3A4%3A%22name%22%3Bs%3A3%3A%22num%22%3Bi%3A1%3B%7D/perpage/25/page/";
+        String startURL = "http://www.parsers.kinopoisk.ru/level/10/ser/a%3A6%3A%7Bs%3A10%3A%22soundtrack%22%3Bs%3A2%3A%22ok%22%3Bs%3A4%3A%22what%22%3Bs%3A7%3A%22content%22%3Bs%3A3%3A%22all%22%3Bs%3A2%3A%22ok%22%3Bs%3A5%3A%22count%22%3Ba%3A1%3A%7Bs%3A7%3A%22content%22%3Bs%3A4%3A%222460%22%3B%7Ds%3A5%3A%22order%22%3Bs%3A4%3A%22name%22%3Bs%3A3%3A%22num%22%3Bi%3A1%3B%7D/perpage/25/page/";
         for (int i = 1; i < 2; i++) //14
         {
             String url = startURL + i;

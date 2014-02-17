@@ -1,7 +1,7 @@
-package stcollect;
+package parsers.stcollect;
 
-import kinopoisk.Movie;
-import kinopoisk.Soundtrack;
+import parsers.models.Movie;
+import parsers.models.Soundtrack;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

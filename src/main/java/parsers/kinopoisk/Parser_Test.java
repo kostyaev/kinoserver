@@ -1,4 +1,4 @@
-package kinopoisk;
+package parsers.kinopoisk;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,10 +21,10 @@ public class Parser_Test {
         Document doc;
         try {
             // получаем http протокол
-            //doc = Jsoup.connect("http://www.kinopoisk.ru/lists/m_act%5Bsoundtrack%5D/ok/m_act%5Ball%5D/ok/m_act%5Bwhat%5D/content/m_act%5Bcount%5D%5Bcontent%5D/2470/m_act%5Border%5D/name/").get();
+            //doc = Jsoup.connect("http://www.parsers.kinopoisk.ru/lists/m_act%5Bsoundtrack%5D/ok/m_act%5Ball%5D/ok/m_act%5Bwhat%5D/content/m_act%5Bcount%5D%5Bcontent%5D/2470/m_act%5Border%5D/name/").get();
 
 
-            doc = Jsoup.connect("http://www.kinopoisk.ru/lists/m_act%5Bsoundtrack%5D/ok/m_act%5Ball%5D/ok/m_act%5Bwhat%5D/content/m_act%5Bcount%5D%5Bcontent%5D/2470/m_act%5Border%5D/name/")
+            doc = Jsoup.connect("http://www.parsers.kinopoisk.ru/lists/m_act%5Bsoundtrack%5D/ok/m_act%5Ball%5D/ok/m_act%5Bwhat%5D/content/m_act%5Bcount%5D%5Bcontent%5D/2470/m_act%5Border%5D/name/")
 
             .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                     .referrer("http://www.google.com")
