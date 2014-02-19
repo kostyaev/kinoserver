@@ -13,7 +13,7 @@ public class Parsers {
         // need save to db function for movieLibrary
         // thread for each parser
 
-        // Create kinopoisk threads:
+        // kinopoisk threads:
         try {
             // init
             int tn = 25; // threads number
@@ -41,13 +41,15 @@ public class Parsers {
             e.printStackTrace();
         }
 
-        // create stcollect threaads
-        // init
+        // create stcollect threads:
         int tn = 91; // final letter 'Z', so it is 'Z' + 1
-
         for (int i = 0; i < tn; i++) {
+            if(i == 9) {
+                i = 65; // jump to letter 'A'
+                continue;
+            }
+
             STThreads.add(new STThread(i, i + 1));
-            if(i == 9) i = 65; // jump to letter 'A'
             break; // test break;
         }
 
