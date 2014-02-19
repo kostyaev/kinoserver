@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
- * Created by virtuozzo on 19.02.14.
- */
+* Created by virtuozzo on 19.02.14.
+*/
 @Entity
 @Table(name = "music_rating", schema = "public", catalog = "kinoserver")
 
@@ -27,8 +27,8 @@ public class MusicRatingEntity {
         this.musicId = musicId;
     }
 
-    @Id
-    @Column(name = "user_id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
+    @ManyToMany(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     public Integer getUserId() {
         return userId;
     }

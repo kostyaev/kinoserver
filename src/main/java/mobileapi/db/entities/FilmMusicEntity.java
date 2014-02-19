@@ -3,8 +3,8 @@ package mobileapi.db.entities;
 import javax.persistence.*;
 
 /**
- * Created by virtuozzo on 19.02.14.
- */
+* Created by virtuozzo on 19.02.14.
+*/
 @Entity
 @Table(name = "film_music", schema = "public", catalog = "kinoserver")
 
@@ -24,8 +24,8 @@ public class FilmMusicEntity {
         this.filmId = filmId;
     }
 
-    @Id
-    @Column(name = "music_id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
+    @ManyToMany(targetEntity = MusicEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "music_id")
     public Integer getMusicId() {
         return musicId;
     }

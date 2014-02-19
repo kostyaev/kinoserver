@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
- * Created by virtuozzo on 19.02.14.
- */
+* Created by virtuozzo on 19.02.14.
+*/
 @Entity
 @Table(name = "favorites", schema = "public", catalog = "kinoserver")
 public class FavoritesEntity {
@@ -25,8 +25,8 @@ public class FavoritesEntity {
         this.userId = userId;
     }
 
-    @Id
-    @Column(name = "music_id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
+    @ManyToOne(targetEntity = MusicEntity.class, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "music_id")
     public Integer getMusicId() {
         return musicId;
     }

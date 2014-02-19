@@ -1,10 +1,10 @@
 package mobileapi.db;
 
-import mobileapi.db.entities2.Music;
+import mobileapi.db.entities.MusicEntity;
 
 /**
  * Created by virtuozzo on 17.02.14.
  */
-public interface IMusicDAO extends GenericDAO<Music, Integer> {
+public interface IMusicDAO extends GenericDAO<MusicEntity, Integer> {
 
 }
