@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Parser {
 
-    public static final String BASE_ADDRESS = "http://www.parsers.kinopoisk.ru";
+    public static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
     public static HashMap<String,Movie> movieLibrary;
 
 
@@ -32,9 +32,9 @@ public class Parser {
         return doc;
     }
 
-    public static void parse() throws IOException {
+    public static void parse(int from, int to) throws IOException {
         movieLibrary = new HashMap<String, Movie>();
-        String startURL = "http://www.parsers.kinopoisk.ru/level/10/ser/a%3A6%3A%7Bs%3A10%3A%22soundtrack%22%3Bs%3A2%3A%22ok%22%3Bs%3A4%3A%22what%22%3Bs%3A7%3A%22content%22%3Bs%3A3%3A%22all%22%3Bs%3A2%3A%22ok%22%3Bs%3A5%3A%22count%22%3Ba%3A1%3A%7Bs%3A7%3A%22content%22%3Bs%3A4%3A%222460%22%3B%7Ds%3A5%3A%22order%22%3Bs%3A4%3A%22name%22%3Bs%3A3%3A%22num%22%3Bi%3A1%3B%7D/perpage/25/page/";
+        String startURL = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
         for (int i = 1; i < 2; i++) //14
         {
             String url = startURL + i;
@@ -59,6 +59,12 @@ public class Parser {
         }
     }
 
+    public static int getAmount() throws IOException {
+        String url = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
+        Document page = connect(url);
+        return Integer.parseInt(page.select("div.pagesFromTo").get(0).text().split(" из ")[1]);
+    }
+
     public static String getImage(String url) throws IOException {
         Document page = connect(url);
         Elements img = page.getElementsByAttributeValue("style", "border:5px solid #ccc");
@@ -70,6 +76,7 @@ public class Parser {
             saveImage(imgURL,"images/" + filename);
 
         } catch (IOException e) {
+            //e.printStackTrace();
         }
 
         return filename;
@@ -133,7 +140,7 @@ public class Parser {
     public static void main(String [] args) {
         Document doc;
         try {
-            parse();
+            parse(1, 2);
             save();
         }
          catch (IOException e) {

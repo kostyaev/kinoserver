@@ -32,12 +32,15 @@ public class Parser {
         return doc;
     }
 
-    public static void parse() throws IOException {
+    public static void parse(int from, int to) throws IOException {
         movieLibrary = new HashMap<String, Movie>();
-        String startURL = BASE_ADDRESS; // append letters A-Z; 0-9
+        String startURL = BASE_ADDRESS; // append letters 'A'-'Z'; 0-9
 
         for (int i = 65; i < 66; i++) { //65-90; 0-9
-            String url = startURL + "/title/browse/" + String.valueOf((char) i);
+            String url = "";
+
+            if(i > 9) url = startURL + "/title/browse/" + String.valueOf((char) i); // letters
+            else url = startURL + "/title/browse/" + Integer.toString(i); // numbers
 
             InputStream input = new URL(url).openStream();
             Document page = Jsoup.parse(input, "cp1251", url); // encoding fix
@@ -78,14 +81,21 @@ public class Parser {
                 page = Jsoup.parse(input, "cp1251", url); // encoding fix
 
                 pageNextElem = page.select("form[name=frmBrowseTop] a"); // next button
-                ne = pageNextElem.get(1);
+                if(pageNextElem.size() < 2) {
+                    ne = null;
+                    letterNextPage = "";
+                } else {
+                    ne = pageNextElem.get(1);
+                }
 
-                if(ne.getElementsByTag("img").eq(0).attr("src").equals("http://img.soundtrackcollector.com/static/btn_next.gif"))
+                /*if(ne.getElementsByTag("img").eq(0).attr("src").equals("http://img.soundtrackcollector.com/static/btn_next.gif"))
                     letterNextPage = ne.attr("href");
                 else {
                     ne = null;
                     letterNextPage = "";
-                }
+                }*/
+
+                break; // test break
             }
         }
     }
@@ -104,6 +114,7 @@ public class Parser {
             saveImage(imgURL,"images/" + filename);
 
         } catch (IOException e) {
+            //e.printStackTrace();
         }
 
         return filename;
@@ -148,7 +159,7 @@ public class Parser {
 
 
     public static void save() throws FileNotFoundException, UnsupportedEncodingException {
-        PrintWriter writer = new PrintWriter("database.txt", "UTF-8");
+        PrintWriter writer = new PrintWriter("databasesc.txt", "UTF-8");
         for(String movieName : movieLibrary.keySet()) {
             writer.println(movieName);
             if(movieLibrary.get(movieName).getSounds() != null) {
@@ -167,7 +178,7 @@ public class Parser {
     public static void main(String [] args) {
         Document doc;
         try {
-            parse();
+            parse(65, 66);
             save();
         }
          catch (IOException e) {
