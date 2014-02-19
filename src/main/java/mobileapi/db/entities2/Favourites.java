@@ -1,4 +1,4 @@
-package mobileapi.db.entities;
+package mobileapi.db.entities2;
 
 import javax.persistence.*;
 

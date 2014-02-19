@@ -1,7 +1,7 @@
 package mobileapi.db.impl;
 
 import mobileapi.db.IMovieDAO;
-import mobileapi.db.entities.Film;
+import mobileapi.db.entities2.Film;
 
 
 /**
