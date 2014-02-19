@@ -44,12 +44,16 @@ public class Parsers {
         // create stcollect threads:
         int tn = 91; // final letter 'Z', so it is 'Z' + 1
         for (int i = 0; i < tn; i++) {
-            if(i == 9) {
+
+            STThreads.add(new STThread(i, i + 1));
+
+            if(i == 8) {
                 i = 65; // jump to letter 'A'
                 continue;
             }
 
-            STThreads.add(new STThread(i, i + 1));
+            if(i < 10) i++;
+
             break; // test break;
         }
 
