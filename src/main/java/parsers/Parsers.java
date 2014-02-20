@@ -7,8 +7,7 @@ import java.util.List;
 
 public class Parsers {
     public static void main(String [] args) {
-        List<KPThread> KPThreads = new ArrayList<KPThread>();
-        List<STThread> STThreads = new ArrayList<STThread>();
+        List<Thread> threads = new ArrayList<Thread>();
 
         // need save to db function for movieLibrary
         // thread for each parser
@@ -33,7 +32,7 @@ public class Parsers {
                     to += ppt;
                 }
 
-                KPThreads.add(new KPThread(from, to));
+                threads.add(new Thread(new KPThread(from, to)));
                 break; // test break;
             }
         }
@@ -45,7 +44,7 @@ public class Parsers {
         int tn = 91; // final letter 'Z', so it is 'Z' + 1
         for (int i = 0; i < tn; i++) {
 
-            STThreads.add(new STThread(i, i + 1));
+            threads.add(new Thread(new STThread(i, i + 1)));
 
             if(i == 8) {
                 i = 65; // jump to letter 'A'
@@ -58,13 +57,11 @@ public class Parsers {
         }
 
         // start threads
-        for (KPThread thread : KPThreads) thread.start();
-        for (STThread thread : STThreads) thread.start();
+        for (Thread thread : threads) thread.start();
 
         // wait threads
         try {
-            for (KPThread thread : KPThreads) thread.join();
-            for (STThread thread : STThreads) thread.join();
+            for (Thread thread : threads) thread.join();
         }
         catch (InterruptedException e) {
             e.printStackTrace();

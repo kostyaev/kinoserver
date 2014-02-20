@@ -2,7 +2,7 @@ package parsers.threads;
 
 import java.io.IOException;
 
-public class KPThread extends Thread {
+public class KPThread implements Runnable {
     private int from;
     private int to;
 
@@ -12,6 +12,7 @@ public class KPThread extends Thread {
         this.to = to;
     }
 
+    @Override
     public void run() {
         parsers.kinopoisk.Parser kpParser = new parsers.kinopoisk.Parser();
 

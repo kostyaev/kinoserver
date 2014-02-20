@@ -2,7 +2,7 @@ package parsers.threads;
 
 import java.io.IOException;
 
-public class STThread extends Thread {
+public class STThread implements Runnable {
     private int from;
     private int to;
 
@@ -12,6 +12,7 @@ public class STThread extends Thread {
         this.to = to;
     }
 
+    @Override
     public void run() {
         parsers.stcollect.Parser scParser = new parsers.stcollect.Parser();
 
