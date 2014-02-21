@@ -9,29 +9,40 @@ import javax.persistence.*;
 @Table(name = "film_music", schema = "public", catalog = "kinoserver")
 
 public class FilmMusicEntity {
-    private Integer filmId;
-    private Integer musicId;
+    private Long id;
+    private FilmEntity film;
+    private MusicEntity music;
+
 
     @Id
-    @Column(name = "film_id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
     @SequenceGenerator(name = "nextIdFilmMusic", sequenceName = "film_music_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdFilmMusic")
-    public Integer getFilmId() {
-        return filmId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFilmId(Integer filmId) {
-        this.filmId = filmId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    @ManyToMany(targetEntity = MusicEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "music_id")
-    public Integer getMusicId() {
-        return musicId;
+    @ManyToOne(targetEntity = FilmEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "film_id", nullable = false)
+    public FilmEntity getFilm() {
+        return film;
     }
 
-    public void setMusicId(Integer musicId) {
-        this.musicId = musicId;
+    public void setFilmId(FilmEntity film) {
+        this.film = film;
+    }
+
+    @ManyToOne(targetEntity = MusicEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "music_id", nullable = false)
+    public MusicEntity getMusic() {
+        return music;
+    }
+
+    public void setMusic(MusicEntity music) {
+        this.music = music;
     }
 
     @Override
@@ -41,16 +52,16 @@ public class FilmMusicEntity {
 
         FilmMusicEntity that = (FilmMusicEntity) o;
 
-        if (filmId != null ? !filmId.equals(that.filmId) : that.filmId != null) return false;
-        if (musicId != null ? !musicId.equals(that.musicId) : that.musicId != null) return false;
+        if (film != null ? !film.equals(that.film) : that.film != null) return false;
+        if (music != null ? !music.equals(that.music) : that.music != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = filmId != null ? filmId.hashCode() : 0;
-        result = 31 * result + (musicId != null ? musicId.hashCode() : 0);
+        int result = film != null ? film.hashCode() : 0;
+        result = 31 * result + (music != null ? music.hashCode() : 0);
         return result;
     }
 }

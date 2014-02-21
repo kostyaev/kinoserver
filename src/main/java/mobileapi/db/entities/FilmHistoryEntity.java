@@ -10,12 +10,11 @@ import java.sql.Timestamp;
 @Table(name = "film_history", schema = "public", catalog = "kinoserver")
 public class FilmHistoryEntity {
     private Integer id;
-    private Integer filmId;
+    private FilmEntity film;
     private String method;
     private Timestamp dateTime;
 
     @Id
-    @Column(name = "id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
     @SequenceGenerator(name = "nextIdFilmHistory", sequenceName = "film_history_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdFilmHistory")
     public Integer getId() {
@@ -26,18 +25,18 @@ public class FilmHistoryEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "film_id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
-    public Integer getFilmId() {
-        return filmId;
+    @OneToOne(targetEntity = FilmEntity.class, fetch = FetchType.LAZY, optional = false)
+    @PrimaryKeyJoinColumn
+    public FilmEntity getFilm() {
+        return film;
     }
 
-    public void setFilmId(Integer filmId) {
-        this.filmId = filmId;
+    public void setFilm(FilmEntity film) {
+        this.film = film;
     }
 
     @Basic
-    @Column(name = "method", nullable = true, insertable = true, updatable = true, length = 45, precision = 0)
+    @Column(name = "method")
     public String getMethod() {
         return method;
     }
@@ -47,7 +46,7 @@ public class FilmHistoryEntity {
     }
 
     @Basic
-    @Column(name = "date_time", nullable = true, insertable = true, updatable = true, length = 29, precision = 6)
+    @Column(name = "date_time")
     public Timestamp getDateTime() {
         return dateTime;
     }
@@ -64,7 +63,7 @@ public class FilmHistoryEntity {
         FilmHistoryEntity that = (FilmHistoryEntity) o;
 
         if (dateTime != null ? !dateTime.equals(that.dateTime) : that.dateTime != null) return false;
-        if (filmId != null ? !filmId.equals(that.filmId) : that.filmId != null) return false;
+        if (film != null ? !film.equals(that.film) : that.film != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (method != null ? !method.equals(that.method) : that.method != null) return false;
 
@@ -74,7 +73,7 @@ public class FilmHistoryEntity {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (filmId != null ? filmId.hashCode() : 0);
+        result = 31 * result + (film != null ? film.hashCode() : 0);
         result = 31 * result + (method != null ? method.hashCode() : 0);
         result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
         return result;

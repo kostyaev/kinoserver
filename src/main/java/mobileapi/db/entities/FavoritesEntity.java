@@ -9,34 +9,45 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "favorites", schema = "public", catalog = "kinoserver")
 public class FavoritesEntity {
-    private Integer userId;
-    private Integer musicId;
+    private Long id;
+    private UserEntity user;
+    private MusicEntity music;
     private Timestamp dateTime;
 
     @Id
-    @Column(name = "user_id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
     @SequenceGenerator(name = "nextIdFavorites", sequenceName = "favorites_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdFavorites")
-    public Integer getUserId() {
-        return userId;
+    public long getId() {
+        return id;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    @ManyToOne(targetEntity = MusicEntity.class, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "music_id")
-    public Integer getMusicId() {
-        return musicId;
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setMusicId(Integer musicId) {
-        this.musicId = musicId;
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+
+    @ManyToOne(targetEntity = MusicEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "music_id", nullable = false)
+    public MusicEntity getMusic() {
+        return music;
+    }
+
+    public void setMusic(MusicEntity music) {
+        this.music = music;
     }
 
     @Basic
-    @Column(name = "date_time", nullable = true, insertable = true, updatable = true, length = 29, precision = 6)
+    @Column(name = "date_time", nullable = false)
     public Timestamp getDateTime() {
         return dateTime;
     }
@@ -53,16 +64,16 @@ public class FavoritesEntity {
         FavoritesEntity that = (FavoritesEntity) o;
 
         if (dateTime != null ? !dateTime.equals(that.dateTime) : that.dateTime != null) return false;
-        if (musicId != null ? !musicId.equals(that.musicId) : that.musicId != null) return false;
-        if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
+        if (music != null ? !music.equals(that.music) : that.music != null) return false;
+        if (user != null ? !user.equals(that.user) : that.user != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = userId != null ? userId.hashCode() : 0;
-        result = 31 * result + (musicId != null ? musicId.hashCode() : 0);
+        int result = user != null ? user.hashCode() : 0;
+        result = 31 * result + (music != null ? music.hashCode() : 0);
         result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
         return result;
     }

@@ -16,7 +16,6 @@ public class MusicRatingEntity {
     private Timestamp dateTime;
 
     @Id
-    @Column(name = "music_id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
     @SequenceGenerator(name = "nextIdMusicRating", sequenceName = "music_rating_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdMusicRating")
     public Integer getMusicId() {

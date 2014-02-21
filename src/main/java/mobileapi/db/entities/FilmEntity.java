@@ -8,26 +8,25 @@ import javax.persistence.*;
 @Entity
 @Table(name = "film", schema = "public", catalog = "kinoserver")
 public class FilmEntity {
-    private Integer id;
+    private Long id;
     private String name;
     private Integer year;
     private Integer img;
     private Double rating;
 
     @Id
-    @Column(name = "id", nullable = false, insertable = true, updatable = true, length = 10, precision = 0)
     @SequenceGenerator(name = "nextIdFilm", sequenceName = "film_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdFilm")
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     @Basic
-    @Column(name = "name", nullable = true, insertable = true, updatable = true, length = 255, precision = 0)
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -37,7 +36,7 @@ public class FilmEntity {
     }
 
     @Basic
-    @Column(name = "year", nullable = true, insertable = true, updatable = true, length = 10, precision = 0)
+    @Column(name = "year")
     public Integer getYear() {
         return year;
     }
@@ -47,7 +46,7 @@ public class FilmEntity {
     }
 
     @Basic
-    @Column(name = "img", nullable = true, insertable = true, updatable = true, length = 10, precision = 0)
+    @Column(name = "img")
     public Integer getImg() {
         return img;
     }
@@ -57,7 +56,7 @@ public class FilmEntity {
     }
 
     @Basic
-    @Column(name = "rating", nullable = true, insertable = true, updatable = true, length = 17, precision = 17)
+    @Column(name = "rating")
     public Double getRating() {
         return rating;
     }
