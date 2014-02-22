@@ -57,7 +57,10 @@ public class Parser {
 
                 String movUrl = BASE_ADDRESS + pagemoviesElems.get(j).attr("href");
 
-                String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["))+pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]"));
+                String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j)
+                        .toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["))+pagemoviesElems
+                        .get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j)
+                                .toString().indexOf("]"));
 
                 System.out.println("start");
                 System.out.println(movName);
@@ -88,7 +91,9 @@ public class Parser {
         if (soundBlocks.isEmpty()) return null;
         for (Element sound : soundBlocks)  {
             String name = sound.text().replace("&amp;", "");
-            String author = sound.parent().parent().select("a[href]").toString().substring(1 + sound.parent().parent().select("a[href]").toString().indexOf(">")).replace("</a>", "").replace("&amp;", "");
+            String author = sound.parent().parent().select("a[href]").toString()
+                    .substring(1 + sound.parent().parent().select("a[href]").toString().indexOf(">"))
+                    .replace("</a>", "").replace("&amp;", "");
             System.out.println(name + " - " +  author);
             Soundtrack track = new Soundtrack(name,author);
             sounds.add(track);
