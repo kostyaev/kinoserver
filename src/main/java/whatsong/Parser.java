@@ -6,7 +6,8 @@ package whatsong;
  * Created by Khasan on 14.02.14.
  */
 
-
+import kinopoisk.Movie;
+import kinopoisk.Soundtrack;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,8 +19,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import kinopoisk.Movie;
-import kinopoisk.Soundtrack;
+
 
 
 public class Parser {
@@ -30,10 +30,16 @@ public class Parser {
 
     public static Document connect(String addr) throws IOException {
         // Подключение к ресурсу
-        Document doc = Jsoup.connect(addr)
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(addr)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                 .referrer("http://www.google.com")
                 .get();
+        }catch (Exception e )
+        {
+            return connect(addr);
+        }
         String title = doc.title();
         return doc;
     }
@@ -43,34 +49,29 @@ public class Parser {
         String startURL = "http://www.what-song.com/Movies/Browse/letter/";
         for (int i = 65; i < 66; i++){  // 0+A-Z
 
-            String url = startURL + String.valueOf((char) i);
+            String url = startURL + "0";			//String.valueOf((char) i);
             Document page = connect(url);
             Elements pagemoviesElems = page.select("div.row-fluid").select("div.span6").select("ul.nav").select("a");
 
-            //  System.out.println(pagemoviesElems.get(3).attr("href"));
-
-
-
-
             for (int j=0; j<pagemoviesElems.size(); j++){
-
-
 
                 String movUrl = BASE_ADDRESS + pagemoviesElems.get(j).attr("href");
 
-                //      System.out.println(movUrl);
                 String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["))+pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]"));
-                //      System.out.println(movName);
+
+                System.out.println("start");
+                System.out.println(movName);
+                System.out.println("---");
 
                 Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl) );
                 movieLibrary.put(movName, curMovie);
 
-                //   	System.out.println(pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("[")));
+                System.out.println("save");
+                System.out.println("---");
+                save();
 
-                //   	System.out.println(pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]")));
-
-
-
+                System.out.println("end");
+                System.out.println("---");
             }
 
         }
@@ -82,40 +83,44 @@ public class Parser {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         Document page = connect(url);
         Elements soundBlocks = page.select("td.span4").select("h4");
-
+        System.out.println("sound");
+        System.out.println("---");
         if (soundBlocks.isEmpty()) return null;
         for (Element sound : soundBlocks)  {
-            String name = sound.text();
-
-            String author = sound.parent().parent().select("a[href]").toString().substring(1 + sound.parent().parent().select("a[href]").toString().indexOf(">")).replace("</a>", "");
-
-
-
+            String name = sound.text().replace("&amp;", "");
+            String author = sound.parent().parent().select("a[href]").toString().substring(1 + sound.parent().parent().select("a[href]").toString().indexOf(">")).replace("</a>", "").replace("&amp;", "");
+            System.out.println(name + " - " +  author);
             Soundtrack track = new Soundtrack(name,author);
             sounds.add(track);
-            //System.out.println(name + "     author: " + author);
+
 
         }
+        System.out.println("sound end");
         return sounds;
     }
 
+
     public static String getImage(String url) throws IOException {
+
         Document page = connect(url);
         Elements img = page.select("div.span2").select("img");
-        System.out.println(img);
-
         if (img.isEmpty()) return null;
         String imgURL = img.first().attr("src");
-        System.out.println(imgURL);
         String [] URLTokens = imgURL.split("/");
-        String filename = URLTokens[URLTokens.length - 1];
+        String filename = URLTokens[URLTokens.length - 2];
+        System.out.println("---");
+        System.out.println("image url");
+        System.out.println(BASE_ADDRESS + imgURL);
+        System.out.println("---");
+        System.out.println("image");
         System.out.println(filename);
+        System.out.println("---");
         try {
-            saveImage(imgURL,"images/" + filename);
+            saveImage(BASE_ADDRESS + imgURL,"images/" + filename);
 
         } catch (IOException e) {
         }
-
+        System.out.println("end image");
         return filename;
 
 
@@ -153,13 +158,14 @@ public class Parser {
         }
         writer.flush();
         writer.close();
+
     }
 
     public static void main(String [] args) {
         Document doc;
         try {
             parse();
-            save();
+            //   save();
         }
         catch (IOException e) {
             e.printStackTrace();
