@@ -7,19 +7,18 @@ package whatsong;
  */
 
 
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import parsers.models.Movie;
+import parsers.models.Soundtrack;
 
 import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import kinopoisk.Movie;
-import kinopoisk.Soundtrack;
 
 
 public class Parser {

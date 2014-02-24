@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "film_history", schema = "public", catalog = "kinoserver")
 public class FilmHistoryEntity {
-    private Integer id;
+    private Long id;
     private FilmEntity film;
     private String method;
     private Timestamp dateTime;
@@ -17,16 +17,16 @@ public class FilmHistoryEntity {
     @Id
     @SequenceGenerator(name = "nextIdFilmHistory", sequenceName = "film_history_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdFilmHistory")
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     @OneToOne(targetEntity = FilmEntity.class, fetch = FetchType.LAZY, optional = false)
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "film_id", nullable = false)
     public FilmEntity getFilm() {
         return film;
     }

@@ -10,34 +10,45 @@ import java.sql.Timestamp;
 @Table(name = "music_rating", schema = "public", catalog = "kinoserver")
 
 public class MusicRatingEntity {
-    private Integer musicId;
-    private Integer userId;
+    private Long id;
+    private MusicEntity music;
+    private UserEntity user;
     private Integer value;
     private Timestamp dateTime;
 
     @Id
     @SequenceGenerator(name = "nextIdMusicRating", sequenceName = "music_rating_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdMusicRating")
-    public Integer getMusicId() {
-        return musicId;
+    public Long getId() {
+        return id;
     }
 
-    public void setMusicId(Integer musicId) {
-        this.musicId = musicId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    @ManyToMany(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = MusicEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "music_id")
+    public MusicEntity getMusic() {
+        return music;
+    }
+
+    public void setMusic(MusicEntity music) {
+        this.music = music;
+    }
+
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    public Integer getUserId() {
-        return userId;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     @Basic
-    @Column(name = "value", nullable = true, insertable = true, updatable = true, length = 10, precision = 0)
+    @Column(name = "value")
     public Integer getValue() {
         return value;
     }
@@ -47,7 +58,7 @@ public class MusicRatingEntity {
     }
 
     @Basic
-    @Column(name = "date_time", nullable = true, insertable = true, updatable = true, length = 29, precision = 6)
+    @Column(name = "date_time")
     public Timestamp getDateTime() {
         return dateTime;
     }
@@ -64,8 +75,8 @@ public class MusicRatingEntity {
         MusicRatingEntity that = (MusicRatingEntity) o;
 
         if (dateTime != null ? !dateTime.equals(that.dateTime) : that.dateTime != null) return false;
-        if (musicId != null ? !musicId.equals(that.musicId) : that.musicId != null) return false;
-        if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
+        if (music != null ? !music.equals(that.music) : that.music != null) return false;
+        if (user != null ? !user.equals(that.user) : that.user != null) return false;
         if (value != null ? !value.equals(that.value) : that.value != null) return false;
 
         return true;
@@ -73,8 +84,8 @@ public class MusicRatingEntity {
 
     @Override
     public int hashCode() {
-        int result = musicId != null ? musicId.hashCode() : 0;
-        result = 31 * result + (userId != null ? userId.hashCode() : 0);
+        int result = music != null ? music.hashCode() : 0;
+        result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
         result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
         return result;

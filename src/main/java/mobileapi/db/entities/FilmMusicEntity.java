@@ -31,7 +31,7 @@ public class FilmMusicEntity {
         return film;
     }
 
-    public void setFilmId(FilmEntity film) {
+    public void setFilm(FilmEntity film) {
         this.film = film;
     }
 
