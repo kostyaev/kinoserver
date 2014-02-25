@@ -22,6 +22,8 @@ import java.util.List;
 
 
 
+
+
 public class Parser {
 
     public static final String BASE_ADDRESS = "http://www.what-song.com";
@@ -47,7 +49,7 @@ public class Parser {
     public static void parse() throws IOException {
         movieLibrary = new HashMap<String, Movie>();
         String startURL = "http://www.what-song.com/Movies/Browse/letter/";
-        for (int i = 65; i < 66; i++){  // 0+A-Z
+        for (int i = 65; i < 66; i++){  // A-Z потом для 0 допишу
 
             String url = startURL + "0";			//String.valueOf((char) i);
             Document page = connect(url);
@@ -62,19 +64,19 @@ public class Parser {
                         .get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j)
                                 .toString().indexOf("]"));
 
-                System.out.println("start");
+             //   System.out.println("start");
                 System.out.println(movName);
-                System.out.println("---");
+               // System.out.println("---");
 
                 Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl) );
                 movieLibrary.put(movName, curMovie);
 
-                System.out.println("save");
-                System.out.println("---");
+             //   System.out.println("save");
+              //  System.out.println("---");
                 save();
 
-                System.out.println("end");
-                System.out.println("---");
+             //   System.out.println("end");
+             //   System.out.println("---");
             }
 
         }
@@ -86,21 +88,60 @@ public class Parser {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         Document page = connect(url);
         Elements soundBlocks = page.select("td.span4").select("h4");
-        System.out.println("sound");
-        System.out.println("---");
-        if (soundBlocks.isEmpty()) return null;
+        //System.out.println("sound");
+        //   if (soundBlocks.isEmpty()) return null;
         for (Element sound : soundBlocks)  {
             String name = sound.text().replace("&amp;", "");
             String author = sound.parent().parent().select("a[href]").toString()
                     .substring(1 + sound.parent().parent().select("a[href]").toString().indexOf(">"))
                     .replace("</a>", "").replace("&amp;", "");
-            System.out.println(name + " - " +  author);
+            //System.out.println(name + " - " +  author);
             Soundtrack track = new Soundtrack(name,author);
             sounds.add(track);
-
-
         }
-        System.out.println("sound end");
+
+
+
+        // не пойму как разобраться со временем в SONGS
+   /*     int n=0;
+        String sauthor=null;
+        String sname;
+        Elements completeList = page.select("tr.movie-play-row").select("h4");
+        for (Element sound = completeList.get(n) ; n<=completeList.size() ; n=n+2  ) {
+
+        n = completeList.indexOf(sound);
+
+          try {   completeList.get(n+1);}
+          catch(Exception e){
+                break;
+          }
+
+
+
+
+           sname = sound.select("h4").toString().replace("<h4>","").replace("</h4>", "");
+           sound = completeList.get(n+1);
+           sauthor = sound.select("a[href]").toString()
+                .substring( 1+ sound.select("a[href]").toString().indexOf(">"),
+                            sound.select("a[href]").toString().indexOf("</"));
+
+        if ((sname.contains(":") == false) || (sauthor.contains(":") == false) ) {
+          Soundtrack track = new Soundtrack(sname,sauthor);
+          sounds.add(track);
+
+
+        System.out.println("---");
+        System.out.println("name: " + sname);
+
+        System.out.println("author: " + sauthor);
+        System.out.println("---");
+        }
+            else{
+        n=n-1;
+        }
+        }
+*/
+        //System.out.println("sound end");
         return sounds;
     }
 
@@ -113,19 +154,20 @@ public class Parser {
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
         String filename = URLTokens[URLTokens.length - 2];
-        System.out.println("---");
+     /*   System.out.println("---");
         System.out.println("image url");
         System.out.println(BASE_ADDRESS + imgURL);
         System.out.println("---");
         System.out.println("image");
         System.out.println(filename);
         System.out.println("---");
+        */
         try {
             saveImage(BASE_ADDRESS + imgURL,"images/" + filename);
 
         } catch (IOException e) {
         }
-        System.out.println("end image");
+     //   System.out.println("end image");
         return filename;
 
 
@@ -169,12 +211,15 @@ public class Parser {
     public static void main(String [] args) {
         Document doc;
         try {
+            // это для разработки парсера unofficial soundtrack  он же CompleteSongList на сайте what-song
+           // getSounds("http://www.what-song.com/Movies/Soundtrack/374/2-Fast-2-Furious");
             parse();
-            //   save();
+               save();
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 }
