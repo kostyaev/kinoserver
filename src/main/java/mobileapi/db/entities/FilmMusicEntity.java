@@ -51,7 +51,7 @@ public class FilmMusicEntity {
         if (o == null || getClass() != o.getClass()) return false;
 
         FilmMusicEntity that = (FilmMusicEntity) o;
-
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (film != null ? !film.equals(that.film) : that.film != null) return false;
         if (music != null ? !music.equals(that.music) : that.music != null) return false;
 
@@ -60,7 +60,8 @@ public class FilmMusicEntity {
 
     @Override
     public int hashCode() {
-        int result = film != null ? film.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (film != null ? film.hashCode() : 0);
         result = 31 * result + (music != null ? music.hashCode() : 0);
         return result;
     }

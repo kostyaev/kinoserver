@@ -34,7 +34,7 @@
 	<migration name="kinoserver-002: create indexes for foreign keys" contactInfo="virtuozz.me@gmail.com">
 		<runSQL>
 			CREATE INDEX favorites_music_id_ix ON favorites (music_id);
-            CREATE INDEX favorites_music_id_ix ON favorites (user_id);
+            CREATE INDEX favorites_user_id_ix ON favorites (user_id);
 
             CREATE INDEX film_history_film_id_ix ON film_history (film_id);
 

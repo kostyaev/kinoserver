@@ -38,7 +38,6 @@ public class PerformerEntity {
         if (o == null || getClass() != o.getClass()) return false;
 
         PerformerEntity that = (PerformerEntity) o;
-
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
 

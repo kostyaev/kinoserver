@@ -62,7 +62,7 @@ public class FavoritesEntity {
         if (o == null || getClass() != o.getClass()) return false;
 
         FavoritesEntity that = (FavoritesEntity) o;
-
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (dateTime != null ? !dateTime.equals(that.dateTime) : that.dateTime != null) return false;
         if (music != null ? !music.equals(that.music) : that.music != null) return false;
         if (user != null ? !user.equals(that.user) : that.user != null) return false;
@@ -72,7 +72,8 @@ public class FavoritesEntity {
 
     @Override
     public int hashCode() {
-        int result = user != null ? user.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (music != null ? music.hashCode() : 0);
         result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
         return result;
