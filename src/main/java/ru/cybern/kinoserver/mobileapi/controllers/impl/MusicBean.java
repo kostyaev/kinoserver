@@ -27,51 +27,62 @@ public class MusicBean implements IMusicBean {
 
     @Override
     public MusicEntity saveMusic(MusicEntity music) {
-        return null;
+        return musicDAO.save(music);
     }
 
     @Override
     public void deleteMusic(MusicEntity music) {
-
+        musicDAO.delete(music);
     }
 
     @Override
     public MusicEntity getMusic(int id) {
-        return null;
+        return musicDAO.findById(id,false);
     }
 
     @Override
     public boolean deleteMusic(int id) {
+        MusicEntity music = musicDAO.findById(id, true);
+        if (music != null){
+            deleteMusic(music);
+            return true;
+        }
         return false;
     }
 
     @Override
     public List<MusicEntity> getAllMusic() {
-        return null;
+        return musicDAO.findAll();
     }
 
     @Override
     public MusicRatingEntity saveRating(MusicRatingEntity rating) {
-        return null;
+        return ratingDAO.save(rating);
     }
 
     @Override
     public void deleteRating(MusicRatingEntity rating) {
-
+        ratingDAO.delete(rating);
     }
 
     @Override
     public MusicRatingEntity getRating(int id) {
-        return null;
+        return ratingDAO.findById(id,false);
     }
 
     @Override
     public boolean deleteRating(int id) {
+        MusicRatingEntity rating = ratingDAO.findById(id,true);
+        if (rating != null){
+            deleteRating(rating);
+            return true;
+        }
+
         return false;
     }
 
     @Override
     public List<MusicRatingEntity> getRatings() {
-        return null;
+        return ratingDAO.findAll();
     }
 }
