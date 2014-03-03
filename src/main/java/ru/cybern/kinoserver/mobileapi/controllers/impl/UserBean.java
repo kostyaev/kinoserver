@@ -23,26 +23,33 @@ public class UserBean implements IUserBean {
 
     @Override
     public UserEntity saveUser(UserEntity user) {
-        return null;
+        return userDAO.save(user);
     }
 
     @Override
     public void deleteUser(UserEntity user) {
+        userDAO.delete(user);
+
 
     }
 
     @Override
     public UserEntity getUser(int id) {
-        return null;
+        return userDAO.findById(id,false);
     }
 
     @Override
     public boolean deleteUser(int id) {
+        UserEntity user = userDAO.findById(id,false);
+        if (user != null){
+            deleteUser(user);
+            return true;
+        }
         return false;
     }
 
     @Override
     public List<UserEntity> getUsers() {
-        return null;
+        return userDAO.findAll();
     }
 }
