@@ -4,6 +4,7 @@ import ru.cybern.kinoserver.mobileapi.db.entities.FilmEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmHistoryEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -29,6 +30,8 @@ public interface IFilmBean {
     boolean deleteFilmHistory(int id);
 
     List<FilmHistoryEntity> getFilmHistory();
+
+    List<FilmHistoryEntity> getFilmHistoryAfterDate(Date date);
 
 
     FilmMusicEntity saveFilmMusic(FilmMusicEntity filmMusic);

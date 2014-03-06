@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 
 @Stateless
@@ -89,6 +90,11 @@ public class FilmBean implements IFilmBean {
     @Override
     public List<FilmHistoryEntity> getFilmHistory() {
         return historyDAO.findAll();
+    }
+
+    @Override
+    public List<FilmHistoryEntity> getFilmHistoryAfterDate(Date date) {
+        return historyDAO.getAfterDate(date);
     }
 
     @Override

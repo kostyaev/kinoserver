@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "film_music", schema = "public", catalog = "kinoserver")
 
 public class FilmMusicEntity {
-    private Long id;
+    private Integer id;
     private FilmEntity film;
     private MusicEntity music;
 
@@ -17,11 +17,11 @@ public class FilmMusicEntity {
     @Id
     @SequenceGenerator(name = "nextIdFilmMusic", sequenceName = "film_music_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdFilmMusic")
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

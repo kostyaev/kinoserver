@@ -30,7 +30,6 @@ public class FilmBeanSuite {
 
     @Test
     public void saveFilmTest() {
-
         int before = filmBean.getFilms().size();
         FilmEntity film = new FilmEntity();
         film.setName("Die Hard");

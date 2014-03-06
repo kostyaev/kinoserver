@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "favorites", schema = "public", catalog = "kinoserver")
 public class FavoritesEntity {
-    private Long id;
+    private Integer id;
     private UserEntity user;
     private MusicEntity music;
     private Timestamp dateTime;
@@ -17,11 +17,11 @@ public class FavoritesEntity {
     @Id
     @SequenceGenerator(name = "nextIdFavorites", sequenceName = "favorites_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdFavorites")
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

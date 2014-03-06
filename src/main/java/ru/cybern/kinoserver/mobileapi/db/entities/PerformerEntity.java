@@ -8,17 +8,17 @@ import javax.persistence.*;
 @Entity
 @Table(name = "performer", schema = "public", catalog = "kinoserver")
 public class PerformerEntity {
-    private Long id;
+    private Integer id;
     private String name;
 
     @Id
     @SequenceGenerator(name = "nextIdPerformer", sequenceName = "perfomer_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdPerformer")
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

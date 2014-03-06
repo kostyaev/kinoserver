@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "film", schema = "public", catalog = "kinoserver")
 public class FilmEntity {
-    private Long id;
+    private Integer id;
     private String name;
     private Integer year;
     private Integer img;
@@ -17,11 +17,11 @@ public class FilmEntity {
     @Id
     @SequenceGenerator(name = "nextIdFilm", sequenceName = "film_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdFilm")
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

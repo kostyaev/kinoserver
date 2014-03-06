@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "music_rating", schema = "public", catalog = "kinoserver")
 
 public class MusicRatingEntity {
-    private Long id;
+    private Integer id;
     private MusicEntity music;
     private UserEntity user;
     private Integer value;
@@ -19,11 +19,11 @@ public class MusicRatingEntity {
     @Id
     @SequenceGenerator(name = "nextIdMusicRating", sequenceName = "music_rating_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nextIdMusicRating")
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
