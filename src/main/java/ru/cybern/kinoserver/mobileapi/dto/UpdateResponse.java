@@ -2,8 +2,8 @@ package ru.cybern.kinoserver.mobileapi.dto;
 
 import ru.cybern.kinoserver.mobileapi.db.entities.FavoritesEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmEntity;
+import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
-import ru.cybern.kinoserver.mobileapi.db.entities.MusicRatingEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
 
 import java.util.Date;
@@ -18,7 +18,7 @@ public class UpdateResponse {
     private List<FavoritesEntity> favorites;
     private List<FilmEntity> films;
     private List<MusicEntity> music;
-    private List<MusicRatingEntity> ratings;
+    private List<FilmMusicEntity> filmMusic;
     private List<PerformerEntity> performers;
     private Date updateDate;
 
@@ -63,12 +63,12 @@ public class UpdateResponse {
         this.music = music;
     }
 
-    public List<MusicRatingEntity> getRatings() {
-        return ratings;
+    public List<FilmMusicEntity> getFilmMusic() {
+        return filmMusic;
     }
 
-    public void setRatings(List<MusicRatingEntity> ratings) {
-        this.ratings = ratings;
+    public void setFilmMusic(List<FilmMusicEntity> filmMusic) {
+        this.filmMusic = filmMusic;
     }
 
     public List<PerformerEntity> getPerformers() {

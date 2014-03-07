@@ -1,7 +1,10 @@
 package ru.cybern.kinoserver.mobileapi.db.impl;
 
+import org.hibernate.criterion.Restrictions;
 import ru.cybern.kinoserver.mobileapi.db.IFilmMusicDAO;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
+
+import java.util.List;
 
 
 /**
@@ -9,4 +12,11 @@ import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
  */
 public class FilmMusicDAO extends HibernateGenericDAO<FilmMusicEntity, Integer>
         implements IFilmMusicDAO {
+
+    @Override
+    public List<FilmMusicEntity> getFilmMusicByFilmId(int filmId) {
+        return  createCriteria()
+                .add(Restrictions.eq("film", filmId))
+                .list();
+    }
 }

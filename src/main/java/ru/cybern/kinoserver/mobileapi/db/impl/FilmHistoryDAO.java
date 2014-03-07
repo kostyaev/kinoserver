@@ -17,7 +17,7 @@ public class FilmHistoryDAO extends HibernateGenericDAO<FilmHistoryEntity, Integ
     @Override
     public List<FilmHistoryEntity> getAfterDate(Date date) {
         return  createCriteria()
-                .add(Restrictions.gt("date_time", date))
+                .add(Restrictions.gt("dateTime", date))
                 .list();
 
     }

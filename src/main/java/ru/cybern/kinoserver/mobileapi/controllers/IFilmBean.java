@@ -44,4 +44,6 @@ public interface IFilmBean {
 
     List<FilmMusicEntity> getFilmMusic();
 
+    List<FilmMusicEntity> getFilmMusicByFilmId(int filmId);
+
 }

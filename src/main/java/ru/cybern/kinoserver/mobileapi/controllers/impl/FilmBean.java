@@ -126,4 +126,9 @@ public class FilmBean implements IFilmBean {
     public List<FilmMusicEntity> getFilmMusic() {
         return filmMusicDAO.findAll();
     }
+
+    @Override
+    public List<FilmMusicEntity> getFilmMusicByFilmId(int filmId) {
+        return filmMusicDAO.getFilmMusicByFilmId(filmId);
+    }
 }
