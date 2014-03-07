@@ -32,7 +32,7 @@ public class Parser {
         return doc;
     }
 
-    public static void parse(int from, int to) throws IOException {
+    public static HashMap<String,Movie> parse(int from, int to) throws IOException {
         movieLibrary = new HashMap<String, Movie>();
         String startURL = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
         for (int i = 1; i < 2; i++) //14
@@ -49,14 +49,15 @@ public class Parser {
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
 
                 //System.out.println(movUrl);
-                String movName = moviesElems.get(j).text() + ", " + yearElems.get(j).text();
+                String movName = moviesElems.get(j).text();
                 System.out.println(movName);
 
-                Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl) );
+                Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl), Integer.parseInt(yearElems.get(j).text()));
                 movieLibrary.put(movName, curMovie);
 
             }
         }
+        return movieLibrary;
     }
 
     public static int getAmount() throws IOException {
@@ -65,13 +66,13 @@ public class Parser {
         return Integer.parseInt(page.select("div.pagesFromTo").get(0).text().split(" из ")[1]);
     }
 
-    public static String getImage(String url) throws IOException {
+    public static Integer getImage(String url) throws IOException {
         Document page = connect(url);
         Elements img = page.getElementsByAttributeValue("style", "border:5px solid #ccc");
         if (img.isEmpty()) return null;
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
-        String filename = URLTokens[URLTokens.length - 1];
+        int filename = Integer.parseInt(URLTokens[URLTokens.length - 1]);
         try {
             saveImage(imgURL,"images/" + filename);
 

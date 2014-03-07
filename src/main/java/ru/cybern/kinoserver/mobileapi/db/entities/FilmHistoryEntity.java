@@ -1,7 +1,17 @@
 package ru.cybern.kinoserver.mobileapi.db.entities;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by virtuozzo on 19.02.14.
@@ -12,7 +22,7 @@ public class FilmHistoryEntity {
     private Integer id;
     private FilmEntity film;
     private String method;
-    private Timestamp dateTime;
+    private Date dateTime;
 
     @Id
     @SequenceGenerator(name = "nextIdFilmHistory", sequenceName = "film_history_id_seq", allocationSize = 1)
@@ -47,11 +57,11 @@ public class FilmHistoryEntity {
 
     @Basic
     @Column(name = "date_time")
-    public Timestamp getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Timestamp dateTime) {
+    public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
 
