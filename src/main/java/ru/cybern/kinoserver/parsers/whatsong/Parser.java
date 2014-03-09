@@ -68,14 +68,9 @@ public class Parser {
 
                 //   	System.out.println(pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]")));
 
-
-
             }
-
         }
     }
-
-
 
     public static List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();

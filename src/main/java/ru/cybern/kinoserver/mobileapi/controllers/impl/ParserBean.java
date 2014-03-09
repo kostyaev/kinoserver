@@ -14,10 +14,6 @@ import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Date;
@@ -27,8 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Stateless
-@TransactionManagement(TransactionManagementType.CONTAINER)
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ParserBean implements IParserBean{
     @Inject
     IFilmBean filmBean;
@@ -71,7 +65,7 @@ public class ParserBean implements IParserBean{
     @Override
     public void update() {
         try {
-            HashMap<String,Movie> movieLib =  Parser.parse(1, 1);
+            HashMap<String,Movie> movieLib =  Parser.parse(1, 2);
             for(String movieName : movieLib.keySet()) {
                 Movie movie = movieLib.get(movieName);
 
@@ -83,7 +77,8 @@ public class ParserBean implements IParserBean{
 
                 FilmEntity addedFilm = filmBean.saveFilm(filmEntity);
 
-                addMusic(movie.getSounds(), addedFilm);
+                if(movie.getSounds() != null)
+                    addMusic(movie.getSounds(), addedFilm);
 
                 FilmHistoryEntity filmHistoryEntity = new FilmHistoryEntity();
                 filmHistoryEntity.setDateTime(new Date());

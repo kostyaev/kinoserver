@@ -19,8 +19,12 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,8 +48,15 @@ public class MobileService {
 
 
     @GET
-    @Path("update")
-    public UpdateResponse getUpdates(Date lastUpdate) {
+    @Path("update/{date}")
+    public UpdateResponse getUpdates(@PathParam("date") String date) {
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date lastUpdate = null;
+        try {
+            lastUpdate = dateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         UpdateResponse updates = new UpdateResponse();
 
         List<FavoritesEntity> favorites = new LinkedList<FavoritesEntity>();
