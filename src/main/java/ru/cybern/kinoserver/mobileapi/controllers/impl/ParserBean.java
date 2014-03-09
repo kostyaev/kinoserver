@@ -14,13 +14,21 @@ import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Stateless
+@TransactionManagement(TransactionManagementType.CONTAINER)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ParserBean implements IParserBean{
     @Inject
     IFilmBean filmBean;
@@ -28,23 +36,35 @@ public class ParserBean implements IParserBean{
     @Inject
     IMusicBean musicBean;
 
-
     private void addMusic(List<Soundtrack> sounds, FilmEntity film) {
         for(Soundtrack sound : sounds) {
-            MusicEntity musicEntity = new MusicEntity();
-            musicEntity.setName(sound.getSong());
+
             PerformerEntity performerEntity = new PerformerEntity();
             performerEntity.setName(sound.getAuthor());
+            musicBean.savePerformer(performerEntity);
+
+            MusicEntity musicEntity = new MusicEntity();
+            musicEntity.setName(sound.getSong());
             musicEntity.setPerformer(performerEntity);
+            musicBean.saveMusic(musicEntity);
 
             FilmMusicEntity filmMusicEntity = new FilmMusicEntity();
             filmMusicEntity.setFilm(film);
             filmMusicEntity.setMusic(musicEntity);
-
-            musicBean.saveMusic(musicEntity);
             filmBean.saveFilmMusic(filmMusicEntity);
 
         }
+    }
+
+    //Unused
+    private int strToInt(String name){
+        Pattern p = Pattern.compile("(.+?)\\.jpg");
+        Matcher m = p.matcher(name);
+        String result = "";
+        if (m.find()) {
+            result = m.group(1);
+        }
+        return Integer.parseInt(result);
     }
 
     //TEST method

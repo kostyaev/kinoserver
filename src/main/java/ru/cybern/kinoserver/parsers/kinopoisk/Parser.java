@@ -43,16 +43,16 @@ public class Parser {
             Elements yearElems = page.select("a.orange");
             Object [] years = yearElems.toArray();
 
-            for (int j = 0; j < yearElems.size(); j++) //200
+            for (int j = 0; j < 5; j++) //200
             {
                 if (i == 13 && j == 61) break;
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
 
                 //System.out.println(movUrl);
-                String movName = moviesElems.get(j).text();
+                String movName = moviesElems.get(j).text() + ", " + yearElems.get(j).text();
                 System.out.println(movName);
 
-                Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl), Integer.parseInt(yearElems.get(j).text()));
+                Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl) );
                 movieLibrary.put(movName, curMovie);
 
             }
@@ -66,13 +66,13 @@ public class Parser {
         return Integer.parseInt(page.select("div.pagesFromTo").get(0).text().split(" из ")[1]);
     }
 
-    public static Integer getImage(String url) throws IOException {
+    public static String getImage(String url) throws IOException {
         Document page = connect(url);
         Elements img = page.getElementsByAttributeValue("style", "border:5px solid #ccc");
         if (img.isEmpty()) return null;
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
-        int filename = Integer.parseInt(URLTokens[URLTokens.length - 1]);
+        String filename = URLTokens[URLTokens.length - 1];
         try {
             saveImage(imgURL,"images/" + filename);
 

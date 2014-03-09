@@ -2,6 +2,7 @@ package ru.cybern.kinoserver.mobileapi;
 
 import ru.cybern.kinoserver.mobileapi.controllers.IFilmBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IMusicBean;
+import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IUserBean;
 import ru.cybern.kinoserver.mobileapi.db.entities.FavoritesEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmEntity;
@@ -38,6 +39,8 @@ public class MobileService {
     IMusicBean musicBean;
     @Inject
     IUserBean userBean;
+    @Inject
+    IParserBean parserBean;
 
 
     @GET
@@ -75,6 +78,12 @@ public class MobileService {
         KeepAliveResponse response = new KeepAliveResponse();
         //@TODO
         return response;
+    }
+
+    @GET
+    @Path("parse")
+    public void run() {
+        parserBean.update();
     }
 
 

@@ -3,8 +3,10 @@ package ru.cybern.kinoserver.mobileapi.controllers.impl;
 import ru.cybern.kinoserver.mobileapi.controllers.IMusicBean;
 import ru.cybern.kinoserver.mobileapi.db.IMusicDAO;
 import ru.cybern.kinoserver.mobileapi.db.IMusicRatingDAO;
+import ru.cybern.kinoserver.mobileapi.db.IPerformerDAO;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicRatingEntity;
+import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -24,6 +26,9 @@ public class MusicBean implements IMusicBean {
 
     @Inject
     private IMusicRatingDAO ratingDAO;
+
+    @Inject
+    private IPerformerDAO performerDAO;
 
     @Override
     public MusicEntity saveMusic(MusicEntity music) {
@@ -84,5 +89,25 @@ public class MusicBean implements IMusicBean {
     @Override
     public List<MusicRatingEntity> getRatings() {
         return ratingDAO.findAll();
+    }
+
+    @Override
+    public PerformerEntity savePerformer(PerformerEntity performer) {
+        return performerDAO.save(performer);
+    }
+
+    @Override
+    public void deletePerformer(PerformerEntity performer) {
+       performerDAO.delete(performer);
+    }
+
+    @Override
+    public PerformerEntity getPerformer(int id) {
+        return performerDAO.findById(id, false);
+    }
+
+    @Override
+    public List<PerformerEntity> getPerformers() {
+        return performerDAO.findAll();
     }
 }

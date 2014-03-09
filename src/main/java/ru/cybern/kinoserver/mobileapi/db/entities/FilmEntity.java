@@ -11,7 +11,7 @@ public class FilmEntity {
     private Integer id;
     private String name;
     private Integer year;
-    private Integer img;
+    private String img;
     private Double rating;
 
     @Id
@@ -47,11 +47,11 @@ public class FilmEntity {
 
     @Basic
     @Column(name = "img")
-    public Integer getImg() {
+    public String getImg() {
         return img;
     }
 
-    public void setImg(Integer img) {
+    public void setImg(String img) {
         this.img = img;
     }
 

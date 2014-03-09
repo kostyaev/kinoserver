@@ -75,6 +75,8 @@ public class Parser {
         }
     }
 
+
+
     public static List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         Document page = connect(url);
@@ -96,7 +98,7 @@ public class Parser {
         return sounds;
     }
 
-    public static Integer getImage(String url) throws IOException {
+    public static String getImage(String url) throws IOException {
         Document page = connect(url);
         Elements img = page.select("div.span2").select("img");
         System.out.println(img);
@@ -105,7 +107,7 @@ public class Parser {
         String imgURL = img.first().attr("src");
         System.out.println(imgURL);
         String [] URLTokens = imgURL.split("/");
-        int filename = Integer.parseInt(URLTokens[URLTokens.length - 1]);
+        String filename = URLTokens[URLTokens.length - 1];
         System.out.println(filename);
         try {
             saveImage(imgURL,"images/" + filename);

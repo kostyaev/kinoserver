@@ -2,6 +2,7 @@ package ru.cybern.kinoserver.mobileapi.controllers;
 
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicRatingEntity;
+import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
 
 import java.util.List;
 
@@ -28,4 +29,15 @@ public interface IMusicBean {
     boolean deleteRating(int id);
 
     List<MusicRatingEntity> getRatings();
+
+
+    PerformerEntity savePerformer(PerformerEntity performer);
+
+    void deletePerformer(PerformerEntity performer);
+
+    PerformerEntity getPerformer(int id);
+
+    List<PerformerEntity> getPerformers();
+
+
 }

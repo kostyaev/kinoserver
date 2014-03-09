@@ -4,16 +4,16 @@ import java.util.List;
 
 public class Movie {
     private List<Soundtrack>  sounds;
-    private int imgName;
+    private String imgName;
     private int year;
 
-    public Movie(List<Soundtrack> sounds, int imgName) {
+    public Movie(List<Soundtrack> sounds, String imgName) {
         this.sounds = sounds;
         this.imgName = imgName;
 
     }
 
-    public Movie(List<Soundtrack> sounds, int imgName, int year) {
+    public Movie(List<Soundtrack> sounds, String imgName, int year) {
         this.sounds = sounds;
         this.imgName = imgName;
         this.year = year;
@@ -36,11 +36,11 @@ public class Movie {
         this.sounds = sounds;
     }
 
-    public int getImgName() {
+    public String getImgName() {
         return imgName;
     }
 
-    public void setImgName(int imgName) {
+    public void setImgName(String imgName) {
         this.imgName = imgName;
     }
 }

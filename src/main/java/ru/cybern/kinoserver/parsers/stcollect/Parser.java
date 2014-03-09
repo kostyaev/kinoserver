@@ -100,7 +100,7 @@ public class Parser {
         }
     }
 
-    public static Integer getImage(String url) throws IOException {
+    public static String getImage(String url) throws IOException {
         InputStream input = new URL(url).openStream();
         Document page = Jsoup.parse(input, "cp1251", url); // encoding fix
 
@@ -109,7 +109,7 @@ public class Parser {
 
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
-        int filename = Integer.parseInt(URLTokens[URLTokens.length - 1]);
+        String filename = URLTokens[URLTokens.length - 1];
         try {
             saveImage(imgURL,"images/" + filename);
 
