@@ -128,7 +128,14 @@ public class FilmBean implements IFilmBean {
     }
 
     @Override
-    public List<FilmMusicEntity> getFilmMusicByFilmId(int filmId) {
-        return filmMusicDAO.getFilmMusicByFilmId(filmId);
+    public List<FilmMusicEntity> getFilmMusicByFilmId(FilmEntity film) {
+        return filmMusicDAO.getFilmMusicByFilmId(film);
     }
+
+
+    @Override
+    public boolean isExist(String name, int year) {
+        return filmDAO.isExist(name, year);
+    }
+
 }

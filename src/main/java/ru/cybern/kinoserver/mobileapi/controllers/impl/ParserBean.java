@@ -13,16 +13,16 @@ import ru.cybern.kinoserver.parsers.kinopoisk.Parser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-@Stateless
+@Startup
+@Singleton
 public class ParserBean implements IParserBean{
     @Inject
     IFilmBean filmBean;
@@ -50,30 +50,20 @@ public class ParserBean implements IParserBean{
         }
     }
 
-    //Unused
-    private int strToInt(String name){
-        Pattern p = Pattern.compile("(.+?)\\.jpg");
-        Matcher m = p.matcher(name);
-        String result = "";
-        if (m.find()) {
-            result = m.group(1);
-        }
-        return Integer.parseInt(result);
-    }
-
     //TEST method
+    //@PostConstruct
     @Override
     public void update() {
         try {
             HashMap<String,Movie> movieLib =  Parser.parse(1, 2);
             for(String movieName : movieLib.keySet()) {
                 Movie movie = movieLib.get(movieName);
-
+                if(filmBean.isExist(movieName, movie.getYear())) continue;
                 FilmEntity filmEntity = new FilmEntity();
                 filmEntity.setImg(movie.getImgName());
                 filmEntity.setName(movieName);
                 filmEntity.setYear(movie.getYear());
-                filmEntity.setRating(5.0);
+                filmEntity.setRating(0.0);
 
                 FilmEntity addedFilm = filmBean.saveFilm(filmEntity);
 

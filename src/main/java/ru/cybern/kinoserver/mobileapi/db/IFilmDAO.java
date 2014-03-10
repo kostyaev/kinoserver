@@ -7,5 +7,7 @@ import ru.cybern.kinoserver.mobileapi.db.entities.FilmEntity;
  */
 public interface IFilmDAO extends GenericDAO<FilmEntity, Integer> {
 
+    boolean isExist(String name, int year);
+
 
 }

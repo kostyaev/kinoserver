@@ -1,23 +1,30 @@
 package ru.cybern.kinoserver.mobileapi;
 
+import org.hibernate.Hibernate;
 import ru.cybern.kinoserver.mobileapi.controllers.IFilmBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IMusicBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IUserBean;
-import ru.cybern.kinoserver.mobileapi.db.entities.FavoritesEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmHistoryEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
-import ru.cybern.kinoserver.mobileapi.dto.KeepAlive;
-import ru.cybern.kinoserver.mobileapi.dto.KeepAliveResponse;
+import ru.cybern.kinoserver.mobileapi.dto.Favorites;
+import ru.cybern.kinoserver.mobileapi.dto.Film;
+import ru.cybern.kinoserver.mobileapi.dto.FilmMusic;
+import ru.cybern.kinoserver.mobileapi.dto.Music;
+import ru.cybern.kinoserver.mobileapi.dto.Performer;
 import ru.cybern.kinoserver.mobileapi.dto.UpdateResponse;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -28,13 +35,12 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by virtuozzo on 14.02.14.
- */
-
+@Stateless
 @Path("/mobile")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 @Consumes("application/json")
+@TransactionManagement(TransactionManagementType.CONTAINER)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class MobileService {
 
     @Inject
@@ -46,57 +52,97 @@ public class MobileService {
     @Inject
     IParserBean parserBean;
 
+    public static final String INIT_DATE = "2014-01-01";
+
+    private void addAllFilmMusic(List<FilmMusicEntity> from, List<FilmMusic> to ) {
+        for(FilmMusicEntity entry : from) {
+            FilmMusic dto = new FilmMusic();
+            Hibernate.initialize(entry);
+            dto.setId(entry.getId());
+            dto.setFilmId(entry.getFilm().getId());
+            dto.setMusicId(entry.getMusic().getId());
+            to.add(dto);
+        }
+    }
+
+    private void addMusic(MusicEntity entity, List<Music> list){
+        Music dto = new Music();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setPerformerId(entity.getPerformer().getId());
+        dto.setRating(0); //FIXME
+        list.add(dto);
+    }
+
+    private void addPerformer(PerformerEntity entity, List<Performer> list){
+        Performer dto = new Performer();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        list.add(dto);
+    }
+
+    private void addFilm(FilmEntity entity, List<Film> list){
+        Film dto = new Film();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setImg(entity.getImg());
+        dto.setRating(entity.getRating());
+        dto.setYear(entity.getYear());
+        list.add(dto);
+    }
+
 
     @GET
     @Path("update/{date}")
     public UpdateResponse getUpdates(@PathParam("date") String date) {
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date lastUpdate = null;
+
         try {
             lastUpdate = dateFormat.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        UpdateResponse updates = new UpdateResponse();
 
-        List<FavoritesEntity> favorites = new LinkedList<FavoritesEntity>();
-        List<FilmEntity> films = new LinkedList<FilmEntity>();
-        List<MusicEntity> music = new LinkedList<MusicEntity>();
-        List<PerformerEntity> performers = new LinkedList<PerformerEntity>();
-        List<FilmMusicEntity> filmMusic = new LinkedList<FilmMusicEntity>();
+        List<Favorites> favorites = new LinkedList<>();
+        List<Film> films = new LinkedList<>();
+        List<Music> music = new LinkedList<>();
+        List<Performer> performers = new LinkedList<>();
+        List<FilmMusic> filmMusic = new LinkedList<>();
 
         List<FilmHistoryEntity> filmHistories = filmBean.getFilmHistoryAfterDate(lastUpdate);
+        Hibernate.initialize(filmHistories);
 
         for(FilmHistoryEntity historyEntry : filmHistories) {
             FilmEntity filmEntry = historyEntry.getFilm();
-            List<FilmMusicEntity> filmMusicData = filmBean.getFilmMusicByFilmId(filmEntry.getId());
-            filmMusic.addAll(filmMusicData);
+            Hibernate.initialize(filmEntry);
+            List<FilmMusicEntity> filmMusicData = filmBean.getFilmMusicByFilmId(filmEntry);
+            Hibernate.initialize(filmMusicData);
+            addAllFilmMusic(filmMusicData, filmMusic);
             for(FilmMusicEntity filmMusicEntry : filmMusicData) {
                 MusicEntity musicEntry = filmMusicEntry.getMusic();
                 PerformerEntity performerEntry = musicEntry.getPerformer();
-                music.add(musicEntry);
-                performers.add(performerEntry);
+                addMusic(musicEntry, music);
+                addPerformer(performerEntry, performers);
             }
-            films.add(filmEntry);
+            addFilm(filmEntry, films);
         }
+
+        UpdateResponse updates = new UpdateResponse();
+        updates.setFavorites(favorites);
+        updates.setFilmMusic(filmMusic);
+        updates.setFilms(films);
+        updates.setMusic(music);
+        updates.setPerformers(performers);
+        updates.setUpdateDate(new Date());
+        updates.setMethod(UpdateResponse.Method.ADD);
+
         return updates;
     }
 
-
-    @POST
-    @Path("keepalive")
-    public KeepAliveResponse keepAlive(KeepAlive keepAlive) {
-        KeepAliveResponse response = new KeepAliveResponse();
-        //@TODO
-        return response;
-    }
-
     @GET
-    @Path("parse")
-    public void run() {
-        parserBean.update();
+    @Path("update")
+    public UpdateResponse getAllUpdates() {
+        return getUpdates(INIT_DATE);
     }
-
-
-
 }

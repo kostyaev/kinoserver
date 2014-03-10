@@ -1,11 +1,5 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-import ru.cybern.kinoserver.mobileapi.db.entities.FavoritesEntity;
-import ru.cybern.kinoserver.mobileapi.db.entities.FilmEntity;
-import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
-import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
-import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
-
 import java.util.Date;
 import java.util.List;
 
@@ -15,11 +9,11 @@ import java.util.List;
 public class UpdateResponse {
     public static enum Method {ADD, DELETE, REPLACE}
     private Method method;
-    private List<FavoritesEntity> favorites;
-    private List<FilmEntity> films;
-    private List<MusicEntity> music;
-    private List<FilmMusicEntity> filmMusic;
-    private List<PerformerEntity> performers;
+    private List<Favorites> favorites;
+    private List<Film> films;
+    private List<Music> music;
+    private List<FilmMusic> filmMusic;
+    private List<Performer> performers;
     private Date updateDate;
 
 
@@ -31,51 +25,51 @@ public class UpdateResponse {
         this.method = method;
     }
 
+    public List<Favorites> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<Favorites> favorites) {
+        this.favorites = favorites;
+    }
+
+    public List<Film> getFilms() {
+        return films;
+    }
+
+    public void setFilms(List<Film> films) {
+        this.films = films;
+    }
+
+    public List<Music> getMusic() {
+        return music;
+    }
+
+    public void setMusic(List<Music> music) {
+        this.music = music;
+    }
+
+    public List<FilmMusic> getFilmMusic() {
+        return filmMusic;
+    }
+
+    public void setFilmMusic(List<FilmMusic> filmMusic) {
+        this.filmMusic = filmMusic;
+    }
+
+    public List<Performer> getPerformers() {
+        return performers;
+    }
+
+    public void setPerformers(List<Performer> performers) {
+        this.performers = performers;
+    }
+
     public Date getUpdateDate() {
         return updateDate;
     }
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
-    }
-
-    public List<FavoritesEntity> getFavorites() {
-        return favorites;
-    }
-
-    public void setFavorites(List<FavoritesEntity> favorites) {
-        this.favorites = favorites;
-    }
-
-    public List<FilmEntity> getFilms() {
-        return films;
-    }
-
-    public void setFilms(List<FilmEntity> films) {
-        this.films = films;
-    }
-
-    public List<MusicEntity> getMusic() {
-        return music;
-    }
-
-    public void setMusic(List<MusicEntity> music) {
-        this.music = music;
-    }
-
-    public List<FilmMusicEntity> getFilmMusic() {
-        return filmMusic;
-    }
-
-    public void setFilmMusic(List<FilmMusicEntity> filmMusic) {
-        this.filmMusic = filmMusic;
-    }
-
-    public List<PerformerEntity> getPerformers() {
-        return performers;
-    }
-
-    public void setPerformers(List<PerformerEntity> performers) {
-        this.performers = performers;
     }
 }

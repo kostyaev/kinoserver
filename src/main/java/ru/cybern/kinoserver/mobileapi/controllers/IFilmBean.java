@@ -44,6 +44,8 @@ public interface IFilmBean {
 
     List<FilmMusicEntity> getFilmMusic();
 
-    List<FilmMusicEntity> getFilmMusicByFilmId(int filmId);
+    List<FilmMusicEntity> getFilmMusicByFilmId(FilmEntity film);
+
+    boolean isExist(String name, int year);
 
 }

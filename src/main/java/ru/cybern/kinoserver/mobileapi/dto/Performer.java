@@ -1,6 +1,6 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-public class User {
+public class Performer{
     private int id;
     private String name;
 
