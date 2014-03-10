@@ -1,4 +1,4 @@
-package whatsong;
+package ru.cybern.kinoserver.parsers.whatsong;
 
 
 
@@ -6,13 +6,13 @@ package whatsong;
  * Created by Khasan on 14.02.14.
  */
 
-import kinopoisk.Movie;
-import kinopoisk.Soundtrack;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.cybern.kinoserver.parsers.models.Movie;
+import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
 import java.io.*;
 import java.net.URL;
@@ -77,12 +77,23 @@ public class Parser {
                 System.out.println(movName);
                 Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl) );
                 movieLibrary.put(movName, curMovie);
-                save();
-            }
 
+                save();
+
+
+                //   	System.out.println(pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("[")));
+
+                //   	System.out.println(pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]")));
+
+
+            }
         }
     }
+
 //  uncomment 3 comments in next method  to check result in console
+
+
+
     public static List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         Document page = connect(url);

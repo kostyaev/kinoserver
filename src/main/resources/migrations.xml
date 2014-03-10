@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE migrations [
+	<!ELEMENT migrations (migration)*>
+	<!ELEMENT migration (runSQL)>
+	<!ATTLIST migration name CDATA #REQUIRED
+						contactInfo CDATA #REQUIRED>
+	<!ELEMENT runSQL (#PCDATA)>
+]>
+<migrations>
+	<migration name="kinoserver-001: create view for indexes" contactInfo="virtuozz.me@gmail.com">
+		<runSQL>
+			CREATE OR REPLACE VIEW view_indexes AS
+			SELECT
+			    t.relname as table_name,
+			    i.relname as index_name,
+			    a.attname as column_name
+			FROM
+			    pg_class t,
+			    pg_class i,
+			    pg_index ix,
+			    pg_attribute a
+			WHERE
+			    t.oid = ix.indrelid
+			    and i.oid = ix.indexrelid
+			    and a.attrelid = t.oid
+			    and a.attnum = ANY(ix.indkey)
+			    and t.relkind = 'r'
+			    and t.relname not like 'pg_%'
+			ORDER BY
+			    t.relname,
+			    i.relname;
+		</runSQL>
+	</migration>
+	<migration name="kinoserver-002: create indexes for foreign keys" contactInfo="virtuozz.me@gmail.com">
+		<runSQL>
+			CREATE INDEX favorites_music_id_ix ON favorites (music_id);
+            CREATE INDEX favorites_user_id_ix ON favorites (user_id);
+
+            CREATE INDEX film_history_film_id_ix ON film_history (film_id);
+
+            CREATE INDEX film_music_film_id_ix ON film_music (film_id);
+            CREATE INDEX film_music_music_id_ix ON film_music (music_id);
+
+            CREATE INDEX music_performer_id_ix ON music (performer_id);
+
+            CREATE INDEX music_rating_user_id_ix ON music_rating (user_id);
+            CREATE INDEX music_rating_music_id_ix ON music_rating (music_id);
+
+		</runSQL>
+	</migration>
+
+
+</migrations>

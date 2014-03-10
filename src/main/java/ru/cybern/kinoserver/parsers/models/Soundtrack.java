@@ -1,4 +1,4 @@
-package kinopoisk;
+package ru.cybern.kinoserver.parsers.models;
 
 
 public class Soundtrack {

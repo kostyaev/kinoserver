@@ -1,3 +1,5 @@
+package ru.cybern.kinoserver.mobileapi;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
