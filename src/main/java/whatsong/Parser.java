@@ -25,7 +25,9 @@ public class Parser {
 
     public static final String BASE_ADDRESS = "http://www.what-song.com";
     public static HashMap<String,Movie> movieLibrary;
-
+    // вопрос с диапазона страниц для парсинга
+    public static int start;
+    public static int end;
     public static Document connect(String addr) throws IOException {
         // Подключение к ресурсу
         Document doc = null;
@@ -41,10 +43,11 @@ public class Parser {
         String title = doc.title();
         return doc;
     }
-
-    public static void parse() throws IOException {
+    //start 65 end 91
+    public static void parse(int start,  int end) throws IOException {
         movieLibrary = new HashMap<String, Movie>();
         String startURL = "http://www.what-song.com/Movies/Browse/letter/";
+
         String url = startURL + "0";
         Document page = connect(url);
         Elements pagemoviesElems = page.select("div.row-fluid").select("div.span6").select("ul.nav").select("a");
@@ -61,7 +64,7 @@ public class Parser {
         }
         url = null;
         page = null;
-        for (int i =65; i <91; i++){
+        for (int i =start; i <end; i++){
             url = startURL + String.valueOf((char) i);
             page = connect(url);
             pagemoviesElems = page.select("div.row-fluid").select("div.span6").select("ul.nav").select("a");
@@ -181,7 +184,7 @@ public class Parser {
         try {
             // это для разработки парсера unofficial soundtrack  он же CompleteSongList на сайте what-song
            // getSounds("http://www.what-song.com/Movies/Soundtrack/374/2-Fast-2-Furious");
-            parse();
+            parse(start, end);
             save();
         }
         catch (IOException e) {
