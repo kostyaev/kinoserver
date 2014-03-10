@@ -164,6 +164,9 @@ public class Parser {
         URL url = new URL(imageUrl);
         InputStream is = url.openStream();
         OutputStream os = new FileOutputStream(destinationFile);
+        File dir = new File(destinationFile);
+        dir.mkdirs();
+
 
         byte[] b = new byte[2048];
         int length;
@@ -199,22 +202,8 @@ public class Parser {
         try {
             // это для разработки парсера unofficial soundtrack  он же CompleteSongList на сайте what-song
            // getSounds("http://www.what-song.com/Movies/Soundtrack/374/2-Fast-2-Furious");
-         /*   parse(start, end);
-            save();*/
-
-            String startURL = "http://www.what-song.com/Movies/Browse/letter/";
-
-            String url = startURL + "0";
-            Document page = connect(url);
-            Elements pagemoviesElems = page.select("div.row-fluid").select("div.span6").select("ul.nav").select("a");
-            int j = 0 ;
-            String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j)
-                    .toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["))+pagemoviesElems
-                    .get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j)
-
-                            .toString().indexOf("]"));
-            System.out.println(movName);
-
+            parse(start, end);
+            save();
 
         }
         catch (IOException e) {
