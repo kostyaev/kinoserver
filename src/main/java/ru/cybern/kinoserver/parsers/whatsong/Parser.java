@@ -25,9 +25,11 @@ public class Parser {
 
     public static final String BASE_ADDRESS = "http://www.what-song.com";
     public static HashMap<String,Movie> movieLibrary;
-    // вопрос с диапазона страниц для парсинга
+    // вопрос с диапазоном страниц для парсинга
+    //+++
     public static int start;
     public static int end;
+    //+++
     public static Document connect(String addr) throws IOException {
         // Подключение к ресурсу
         Document doc = null;
@@ -44,8 +46,8 @@ public class Parser {
         return doc;
     }
     //start 65 end 91
-    public static void parse(int start,  int end) throws IOException {
-        movieLibrary = new HashMap<String, Movie>();
+    public static HashMap<String, Movie> parse(int start,  int end) throws IOException {
+
         String startURL = "http://www.what-song.com/Movies/Browse/letter/";
 
         String url = startURL + "0";
@@ -53,14 +55,19 @@ public class Parser {
         Elements pagemoviesElems = page.select("div.row-fluid").select("div.span6").select("ul.nav").select("a");
         for (int j=0; j<pagemoviesElems.size(); j++){
             String movUrl = BASE_ADDRESS + pagemoviesElems.get(j).attr("href");
-            String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j)
-                    .toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["))+pagemoviesElems
-                    .get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j)
-                            .toString().indexOf("]"));
+
+              String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j)
+              .toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["));
+             String year = pagemoviesElems.get(j).toString()
+                     .substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]"));
+
             System.out.println(movName);
-            Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl) );
-            movieLibrary.put(movName, curMovie);
-            save();
+            List<Soundtrack> sounds = getSounds(movUrl);
+            if ( sounds != null){
+                Movie curMovie = new Movie(sounds,getImage(movUrl), Integer.parseInt(year) );
+                movieLibrary.put(movName, curMovie);
+                save();
+            }
         }
         url = null;
         page = null;
@@ -75,19 +82,16 @@ public class Parser {
                         .get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j)
                                 .toString().indexOf("]"));
                 System.out.println(movName);
-                Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl) );
-                movieLibrary.put(movName, curMovie);
-
-                save();
-
-
-                //   	System.out.println(pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("[")));
-
-                //   	System.out.println(pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]")));
-
+                List<Soundtrack> sounds = getSounds(movUrl);
+                if ( sounds != null){
+                    Movie curMovie = new Movie(sounds,getImage(movUrl) );
+                    movieLibrary.put(movName, curMovie);
+                    save();
+                }
 
             }
         }
+        return movieLibrary;
     }
 
 //  uncomment 3 comments in next method  to check result in console
@@ -195,8 +199,23 @@ public class Parser {
         try {
             // это для разработки парсера unofficial soundtrack  он же CompleteSongList на сайте what-song
            // getSounds("http://www.what-song.com/Movies/Soundtrack/374/2-Fast-2-Furious");
-            parse(start, end);
-            save();
+         /*   parse(start, end);
+            save();*/
+
+            String startURL = "http://www.what-song.com/Movies/Browse/letter/";
+
+            String url = startURL + "0";
+            Document page = connect(url);
+            Elements pagemoviesElems = page.select("div.row-fluid").select("div.span6").select("ul.nav").select("a");
+            int j = 0 ;
+            String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j)
+                    .toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["))+pagemoviesElems
+                    .get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j)
+
+                            .toString().indexOf("]"));
+            System.out.println(movName);
+
+
         }
         catch (IOException e) {
             e.printStackTrace();

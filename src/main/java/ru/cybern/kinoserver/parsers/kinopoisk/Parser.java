@@ -46,6 +46,7 @@ public class Parser {
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
                 String movName = moviesElems.get(j).text();
                 System.out.println(movName);
+
                 Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl), Integer.parseInt(yearElems.get(j).text()));
                 movieLibrary.put(movName, curMovie);
             }
