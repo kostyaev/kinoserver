@@ -47,7 +47,7 @@ public class Parser {
     }
     //start 65 end 91
     public static HashMap<String, Movie> parse(int start,  int end) throws IOException {
-
+        movieLibrary = new HashMap<String, Movie>();
         String startURL = "http://www.what-song.com/Movies/Browse/letter/";
 
         String url = startURL + "0";
@@ -61,9 +61,11 @@ public class Parser {
              String year = pagemoviesElems.get(j).toString()
                      .substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]"));
 
-            System.out.println(movName);
+            System.out.println(movName + year);
+
             List<Soundtrack> sounds = getSounds(movUrl);
             if ( sounds != null){
+
                 Movie curMovie = new Movie(sounds,getImage(movUrl), Integer.parseInt(year) );
                 movieLibrary.put(movName, curMovie);
                 save();
@@ -128,7 +130,7 @@ public class Parser {
            if(sname.contains("href") == false && sauthor.contains("href") == false && sauthor.contains("<a title=") == false && sname.contains("<a title") == false){
                 Soundtrack track = new Soundtrack(sname,sauthor);
                 sounds.add(track);
-            //    System.out.println(sname + " - " +  sauthor);
+     //           System.out.println( "||  " + sname + " - " +  sauthor);
            }
            try{
                if ( completeList.get(n+2).toString().contains(":"))
@@ -139,7 +141,7 @@ public class Parser {
            }
 
         }
-        //System.out.println("=== === ===");
+
         return sounds;
     }
 
@@ -151,9 +153,13 @@ public class Parser {
         String [] URLTokens = imgURL.split("/");
         String filename = URLTokens[URLTokens.length - 2];
         try {
-            saveImage(BASE_ADDRESS + imgURL,"images/" + filename + ".jpg");
+
+            saveImage(BASE_ADDRESS + imgURL,"images/" + "what-song " + filename + ".jpg");
+
 
         } catch (IOException e) {
+            System.out.println("saving image error");
+            e.printStackTrace();
         }
         return filename;
 
@@ -161,20 +167,17 @@ public class Parser {
     }
 
     public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+        File dir = new File("images/");
+        dir.mkdirs();
+
         URL url = new URL(imageUrl);
         InputStream is = url.openStream();
         OutputStream os = new FileOutputStream(destinationFile);
-        File dir = new File(destinationFile);
-        dir.mkdirs();
-
-
         byte[] b = new byte[2048];
         int length;
-
         while ((length = is.read(b)) != -1) {
             os.write(b, 0, length);
         }
-
         is.close();
         os.close();
     }
@@ -200,9 +203,7 @@ public class Parser {
     public static void main(String [] args) {
         Document doc;
         try {
-            // это для разработки парсера unofficial soundtrack  он же CompleteSongList на сайте what-song
-           // getSounds("http://www.what-song.com/Movies/Soundtrack/374/2-Fast-2-Furious");
-            parse(start, end);
+             parse(start, end);
             save();
 
         }

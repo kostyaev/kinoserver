@@ -67,12 +67,8 @@ public class Parser {
                     String movUrl = BASE_ADDRESS + movie.getElementsByTag("a").attr("href");
                     String year = movie.getElementsByTag("td").eq(2).text();
 
-                    if(year.length() > 0)
-                        movieName += ", " + year;
-
-                    System.out.println(movieName);
-
-                    Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl));
+                    System.out.println(movieName + year);
+                    Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl), Integer.parseInt(year));
                     movieLibrary.put(movieName, curMovie);
                     break;
                 }
@@ -111,7 +107,7 @@ public class Parser {
         String [] URLTokens = imgURL.split("/");
         String filename = URLTokens[URLTokens.length - 1];
         try {
-            saveImage(imgURL,"images/" + filename);
+            saveImage(imgURL,"images/" + "stcollect " + filename);
 
         } catch (IOException e) {
             //e.printStackTrace();
@@ -142,6 +138,9 @@ public class Parser {
 
 
     public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+        File dir = new File("images/");
+        dir.mkdirs();
+
         URL url = new URL(imageUrl);
         InputStream is = url.openStream();
         OutputStream os = new FileOutputStream(destinationFile);
