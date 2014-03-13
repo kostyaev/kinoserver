@@ -3,6 +3,7 @@ package ru.cybern.kinoserver.mobileapi.controllers;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmHistoryEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
+import ru.cybern.kinoserver.mobileapi.dto.Update.Method;
 
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,7 @@ public interface IFilmBean {
 
     List<FilmHistoryEntity> getFilmHistoryAfterDate(Date date);
 
+    List<FilmHistoryEntity> getFilmHistoryAfterDateByMethod(Date date, Method method);
 
     FilmMusicEntity saveFilmMusic(FilmMusicEntity filmMusic);
 

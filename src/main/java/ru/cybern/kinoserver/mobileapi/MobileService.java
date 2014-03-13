@@ -15,6 +15,8 @@ import ru.cybern.kinoserver.mobileapi.dto.Film;
 import ru.cybern.kinoserver.mobileapi.dto.FilmMusic;
 import ru.cybern.kinoserver.mobileapi.dto.Music;
 import ru.cybern.kinoserver.mobileapi.dto.Performer;
+import ru.cybern.kinoserver.mobileapi.dto.Update;
+import ru.cybern.kinoserver.mobileapi.dto.Update.Method;
 import ru.cybern.kinoserver.mobileapi.dto.UpdateResponse;
 
 import javax.ejb.Stateless;
@@ -91,27 +93,12 @@ public class MobileService {
         list.add(dto);
     }
 
-
-    @GET
-    @Path("update/{date}")
-    public UpdateResponse getUpdates(@PathParam("date") String date) {
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date lastUpdate = null;
-
-        try {
-            lastUpdate = dateFormat.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+    private Update getUpdates(List<FilmHistoryEntity> filmHistories ) {
         List<Favorites> favorites = new LinkedList<>();
         List<Film> films = new LinkedList<>();
         List<Music> music = new LinkedList<>();
         List<Performer> performers = new LinkedList<>();
         List<FilmMusic> filmMusic = new LinkedList<>();
-
-        List<FilmHistoryEntity> filmHistories = filmBean.getFilmHistoryAfterDate(lastUpdate);
-        Hibernate.initialize(filmHistories);
 
         for(FilmHistoryEntity historyEntry : filmHistories) {
             FilmEntity filmEntry = historyEntry.getFilm();
@@ -128,14 +115,46 @@ public class MobileService {
             addFilm(filmEntry, films);
         }
 
+        Update update = new Update();
+        update.setFavorites(favorites);
+        update.setFilmMusic(filmMusic);
+        update.setFilms(films);
+        update.setMusic(music);
+        update.setPerformers(performers);
+        update.setUpdateDate(new Date());
+        update.setMethod(Update.Method.ADD);
+
+        return update;
+    }
+
+
+    @GET
+    @Path("update/{date}")
+    public UpdateResponse getUpdates(@PathParam("date") String date) {
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date lastUpdate = null;
+
+        try {
+            lastUpdate = dateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        List<FilmHistoryEntity> addHistories = filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.ADD);
+        Update additions = getUpdates(addHistories);
+        List<FilmHistoryEntity> deleteHistories = filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.DELETE);
+        Update deletions = getUpdates(deleteHistories);
+        List<FilmHistoryEntity> updateHistories = filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.UPDATE);
+        Update corrections = getUpdates(updateHistories);
+
+        List<Update> updateList = new LinkedList<>();
+
+        updateList.add(additions);
+        updateList.add(deletions);
+        updateList.add(corrections);
+
         UpdateResponse updates = new UpdateResponse();
-        updates.setFavorites(favorites);
-        updates.setFilmMusic(filmMusic);
-        updates.setFilms(films);
-        updates.setMusic(music);
-        updates.setPerformers(performers);
-        updates.setUpdateDate(new Date());
-        updates.setMethod(UpdateResponse.Method.ADD);
+        updates.setUpdates(updateList);
 
         return updates;
     }

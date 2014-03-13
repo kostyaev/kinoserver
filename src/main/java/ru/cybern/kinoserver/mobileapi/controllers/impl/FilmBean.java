@@ -8,6 +8,7 @@ import ru.cybern.kinoserver.mobileapi.db.IFilmMusicDAO;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmHistoryEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
+import ru.cybern.kinoserver.mobileapi.dto.Update.Method;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -95,6 +96,11 @@ public class FilmBean implements IFilmBean {
     @Override
     public List<FilmHistoryEntity> getFilmHistoryAfterDate(Date date) {
         return historyDAO.getAfterDate(date);
+    }
+
+    @Override
+    public List<FilmHistoryEntity> getFilmHistoryAfterDateByMethod(Date date, Method method) {
+        return historyDAO.getAfterDateByMethod(date, method);
     }
 
     @Override

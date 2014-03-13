@@ -8,7 +8,7 @@ import ru.cybern.kinoserver.mobileapi.db.entities.FilmHistoryEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
-import ru.cybern.kinoserver.mobileapi.dto.UpdateResponse;
+import ru.cybern.kinoserver.mobileapi.dto.Update;
 import ru.cybern.kinoserver.parsers.kinopoisk.Parser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
@@ -73,7 +73,7 @@ public class ParserBean implements IParserBean{
                 FilmHistoryEntity filmHistoryEntity = new FilmHistoryEntity();
                 filmHistoryEntity.setDateTime(new Date());
                 filmHistoryEntity.setFilm(filmEntity);
-                filmHistoryEntity.setMethod(UpdateResponse.Method.ADD.name());
+                filmHistoryEntity.setMethod(Update.Method.ADD.name());
 
                 filmBean.saveFilmHistory(filmHistoryEntity);
 
