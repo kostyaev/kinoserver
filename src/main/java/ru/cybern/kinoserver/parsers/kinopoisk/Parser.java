@@ -46,8 +46,12 @@ public class Parser {
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
                 String movName = moviesElems.get(j).text();
                 System.out.println(movName);
+
+              List<Soundtrack> gotSounds = getSounds(movUrl);
+                if ( gotSounds != null ){
                 Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl), Integer.parseInt(yearElems.get(j).text()));
                 movieLibrary.put(movName, curMovie);
+              }
             }
         }
         return movieLibrary;
@@ -66,12 +70,12 @@ public class Parser {
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
         String filename = URLTokens[URLTokens.length - 1];
-//        try {
-//            saveImage(imgURL,"images/" + filename);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            saveImage(imgURL,"images/" + "kinopoisk " + filename);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return filename;
     }
 
@@ -94,6 +98,9 @@ public class Parser {
 
 
     public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+        File dir = new File("images/");
+        dir.mkdirs();
+
         URL url = new URL(imageUrl);
         InputStream is = url.openStream();
         OutputStream os = new FileOutputStream(destinationFile);
