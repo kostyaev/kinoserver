@@ -1,12 +1,5 @@
 package ru.cybern.kinoserver.parsers.whatsong;
 
-
-
-/**
- * Created by Khasan on 14.02.14.
- */
-
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,17 +13,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class Parser {
 
-    public static final String BASE_ADDRESS = "http://www.what-song.com";
-    public static HashMap<String,Movie> movieLibrary;
+    private static final String BASE_ADDRESS = "http://www.what-song.com";
+    private static HashMap<String,Movie> movieLibrary;
     // вопрос с диапазоном страниц для парсинга
     //+++
-    public static int start;
-    public static int end;
+    private static int start;
+    private static int end;
     //+++
-    public static Document connect(String addr) throws IOException {
+    private static Document connect(String addr) throws IOException {
         // Подключение к ресурсу
         Document doc = null;
         try {
@@ -42,7 +34,6 @@ public class Parser {
         {
             return connect(addr);
         }
-        String title = doc.title();
         return doc;
     }
     //start 65 end 91
@@ -98,9 +89,7 @@ public class Parser {
 
 //  uncomment 3 comments in next method  to check result in console
 
-
-
-    public static List<Soundtrack> getSounds(String url) throws IOException {
+    private static List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         Document page = connect(url);
         Elements soundBlocks = page.select("td.span4").select("h4");
@@ -145,7 +134,7 @@ public class Parser {
         return sounds;
     }
 
-    public static String getImage(String url) throws IOException {
+    private static String getImage(String url) throws IOException {
         Document page = connect(url);
         Elements img = page.select("div.span2").select("img");
         if (img.isEmpty()) return null;
@@ -166,7 +155,7 @@ public class Parser {
 
     }
 
-    public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+    private static void saveImage(String imageUrl, String destinationFile) throws IOException {
         File dir = new File("images/");
         dir.mkdirs();
 
@@ -182,7 +171,7 @@ public class Parser {
         os.close();
     }
 
-    public static void save() throws FileNotFoundException, UnsupportedEncodingException {
+    private static void save() throws FileNotFoundException, UnsupportedEncodingException {
         PrintWriter writer = new PrintWriter("database.txt", "UTF-8");
         for(String movieName : movieLibrary.keySet()) {
             writer.println(movieName);
@@ -200,7 +189,7 @@ public class Parser {
 
     }
 
-    public static void main(String [] args) {
+    private static void main(String [] args) {
         Document doc;
         try {
              parse(start, end);

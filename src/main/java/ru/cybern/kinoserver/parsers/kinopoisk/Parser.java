@@ -15,10 +15,10 @@ import java.util.List;
 
 public class Parser {
 
-    public static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
-    public static HashMap<String,Movie> movieLibrary;
+    private static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
+    private static HashMap<String,Movie> movieLibrary;
 
-    public static Document connect(String addr) throws IOException {
+    private static Document connect(String addr) throws IOException {
         // Подключение к ресурсу
         Document doc = Jsoup.connect(addr)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
@@ -32,7 +32,7 @@ public class Parser {
         String startURL = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
         Document page = connect(startURL);
         startURL =  BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/page/";
-        for (int i = from; i < to; i++) //14
+        for (int i = from; i <= to; i++) //14
         {
             String url = startURL + i;
             page = connect(url);
@@ -40,7 +40,7 @@ public class Parser {
             Elements yearElems = page.select("a.orange");
             Object [] years = yearElems.toArray();
 
-            //for (int j = 0; j < yearElems.size(); j++)
+//            for (int j = 0; j < yearElems.size(); j++)
             for (int j = 0; j < 50; j++)
             {
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
@@ -57,13 +57,13 @@ public class Parser {
         return movieLibrary;
     }
 
-    public static int getAmount() throws IOException {
+    private static int getAmount() throws IOException {
         String url = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
         Document page = connect(url);
         return Integer.parseInt(page.select("div.pagesFromTo").get(0).text().split(" из ")[1]);
     }
 
-    public static String getImage(String url) throws IOException {
+    private static String getImage(String url) throws IOException {
         Document page = connect(url);
         Elements img = page.getElementsByAttributeValue("style", "border:5px solid #ccc");
         if (img.isEmpty()) return null;
@@ -79,7 +79,7 @@ public class Parser {
         return filename;
     }
 
-    public static List<Soundtrack> getSounds(String url) throws IOException {
+    private static List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         Document page = connect(url);
         Elements soundBlocks = page.getElementsByAttributeValue("style", "color:#f60");
@@ -97,7 +97,7 @@ public class Parser {
     }
 
 
-    public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+    private static void saveImage(String imageUrl, String destinationFile) throws IOException {
         File dir = new File("images/");
         dir.mkdirs();
 
@@ -117,7 +117,7 @@ public class Parser {
     }
 
 
-    public static void save() throws FileNotFoundException, UnsupportedEncodingException {
+    private static void save() throws FileNotFoundException, UnsupportedEncodingException {
         PrintWriter writer = new PrintWriter("database.txt", "UTF-8");
         for(String movieName : movieLibrary.keySet()) {
             writer.println(movieName);
@@ -134,7 +134,7 @@ public class Parser {
         writer.close();
     }
 
-    public static void main(String [] args) {
+    private static void main(String [] args) {
         Document doc;
         try {
             parse(1, 2);

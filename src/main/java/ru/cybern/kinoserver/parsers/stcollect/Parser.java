@@ -15,20 +15,16 @@ import java.util.List;
 
 public class Parser {
 
-    public static final String BASE_ADDRESS = "http://www.soundtrackcollector.com";
-    public static HashMap<String,Movie> movieLibrary;
+    private static final String BASE_ADDRESS = "http://www.soundtrackcollector.com";
+    private static HashMap<String,Movie> movieLibrary;
 
 
-    public static Document connect(String addr) throws IOException {
+    private static Document connect(String addr) throws IOException {
         // doc conn
         Document doc = Jsoup.connect(addr)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                 .referrer("http://www.google.com")
                 .get();
-
-        //File input = new File("/tmp/input.html");
-        String title = doc.title();
-        //System.out.print(title);
         return doc;
     }
 
@@ -96,7 +92,7 @@ public class Parser {
         }
     }
 
-    public static String getImage(String url) throws IOException {
+    private static String getImage(String url) throws IOException {
         InputStream input = new URL(url).openStream();
         Document page = Jsoup.parse(input, "cp1251", url); // encoding fix
 
@@ -116,7 +112,7 @@ public class Parser {
         return filename;
     }
 
-    public static List<Soundtrack> getSounds(String url) throws IOException {
+    private static List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         InputStream input = new URL(url).openStream();
         Document page = Jsoup.parse(input, "cp1251", url); // encoding fix
@@ -137,7 +133,7 @@ public class Parser {
     }
 
 
-    public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+    private static void saveImage(String imageUrl, String destinationFile) throws IOException {
         File dir = new File("images/");
         dir.mkdirs();
 
@@ -157,7 +153,7 @@ public class Parser {
     }
 
 
-    public static void save() throws FileNotFoundException, UnsupportedEncodingException {
+    private static void save() throws FileNotFoundException, UnsupportedEncodingException {
         PrintWriter writer = new PrintWriter("databasesc.txt", "UTF-8");
         for(String movieName : movieLibrary.keySet()) {
             writer.println(movieName);
@@ -174,7 +170,7 @@ public class Parser {
         writer.close();
     }
 
-    public static void main(String [] args) {
+    private static void main(String [] args) {
         Document doc;
         try {
             parse(65, 66);
