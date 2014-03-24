@@ -12,82 +12,78 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
 
     private static final String BASE_ADDRESS = "http://www.what-song.com";
     private static HashMap<String,Movie> movieLibrary;
-    // вопрос с диапазоном страниц для парсинга
-    //+++
-    private static int start;
-    private static int end;
-    //+++
+
     private static Document connect(String addr) throws IOException {
-        // Подключение к ресурсу
         Document doc = null;
         try {
             doc = Jsoup.connect(addr)
-                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                .referrer("http://www.google.com")
-                .get();
+                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .referrer("http://www.google.com")
+                    .get();
         }catch (Exception e )
         {
             return connect(addr);
         }
         return doc;
     }
-    //start 65 end 91
+
+    private static String extractYear(String str) {
+        Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find())
+        {
+            return matcher.group(1);
+        }
+        return null;
+    }
+    private static String extractName(String str) {
+        Pattern pattern = Pattern.compile("(^.+) \\[.+");
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find())
+        {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
     public static HashMap<String, Movie> parse(int start,  int end) throws IOException {
         movieLibrary = new HashMap<String, Movie>();
         String startURL = "http://www.what-song.com/Movies/Browse/letter/";
-
-        String url = startURL + "0";
-        Document page = connect(url);
-        Elements pagemoviesElems = page.select("div.row-fluid").select("div.span6").select("ul.nav").select("a");
-        for (int j=0; j<pagemoviesElems.size(); j++){
-            String movUrl = BASE_ADDRESS + pagemoviesElems.get(j).attr("href");
-
-              String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j)
-              .toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["));
-             String year = pagemoviesElems.get(j).toString()
-                     .substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j).toString().indexOf("]"));
-
-            System.out.println(movName + year);
-
-            List<Soundtrack> sounds = getSounds(movUrl);
-            if ( sounds != null){
-
-                Movie curMovie = new Movie(sounds,getImage(movUrl), Integer.parseInt(year) );
-                movieLibrary.put(movName, curMovie);
-                save();
-            }
-        }
-        url = null;
-        page = null;
-        for (int i =start; i <end; i++){
-            url = startURL + String.valueOf((char) i);
+        Document page = connect(startURL);
+        Elements pagemoviesElems;
+        Elements pageElems = page.select("a.hoverEffect");
+        if(start < 1)
+            start = 1;
+        if(end > pageElems.size() - 1)
+            end = pageElems.size();
+        for (int i = start; i <= end; i++){
+            String url = BASE_ADDRESS + pageElems.get(i).attr("href");
             page = connect(url);
-            pagemoviesElems = page.select("div.row-fluid").select("div.span6").select("ul.nav").select("a");
+            pagemoviesElems = page.select(".nav-pills").select(".nav-stacked").select("a");
             for (int j=0; j<pagemoviesElems.size(); j++){
                 String movUrl = BASE_ADDRESS + pagemoviesElems.get(j).attr("href");
-                String movName = pagemoviesElems.get(j).toString().substring(1+pagemoviesElems.get(j)
-                        .toString().indexOf(">"), pagemoviesElems.get(j).toString().indexOf("["))+pagemoviesElems
-                        .get(j).toString().substring(1+pagemoviesElems.get(j).toString().indexOf("["), pagemoviesElems.get(j)
-                                .toString().indexOf("]"));
-                System.out.println(movName);
+                String name = pagemoviesElems.get(j).text();
+                int year = Integer.parseInt(extractYear(name));
+                String movName = extractName(name);
+                System.out.println("Movie name: " + movName);
+                System.out.println("YEAR: " + year);
                 List<Soundtrack> sounds = getSounds(movUrl);
                 if ( sounds != null){
-                    Movie curMovie = new Movie(sounds,getImage(movUrl) );
+                    Movie curMovie = new Movie(sounds,getImage(movUrl),year);
                     movieLibrary.put(movName, curMovie);
                     save();
                 }
-
             }
         }
         return movieLibrary;
     }
-
-//  uncomment 3 comments in next method  to check result in console
 
     private static List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
@@ -98,7 +94,6 @@ public class Parser {
             String author = sound.parent().parent().select("a[href]").toString()
                     .substring(1 + sound.parent().parent().select("a[href]").toString().indexOf(">"))
                     .replace("</a>", "").replace("&amp;", "");
-         //   System.out.println(name + " - " +  author);
             Soundtrack track = new Soundtrack(name,author);
             sounds.add(track);
         }
@@ -113,21 +108,21 @@ public class Parser {
             catch(Exception e){
                 break;
             }
-           sname = sound.select("h4").toString().replace("<h4>","").replace("</h4>", "");
-           sound = completeList.get(n+1);
-           sauthor = sound.select("h4").select("a[href]").toString().substring(1+sound.select("h4").select("a[href]").toString().indexOf(">")).replace("</a>","");
-           if(sname.contains("href") == false && sauthor.contains("href") == false && sauthor.contains("<a title=") == false && sname.contains("<a title") == false){
+            sname = sound.select("h4").toString().replace("<h4>","").replace("</h4>", "");
+            sound = completeList.get(n+1);
+            sauthor = sound.select("h4").select("a[href]").toString().substring(1+sound.select("h4").select("a[href]").toString().indexOf(">")).replace("</a>","");
+            if(sname.contains("href") == false && sauthor.contains("href") == false && sauthor.contains("<a title=") == false && sname.contains("<a title") == false){
                 Soundtrack track = new Soundtrack(sname,sauthor);
                 sounds.add(track);
-     //           System.out.println( "||  " + sname + " - " +  sauthor);
-           }
-           try{
-               if ( completeList.get(n+2).toString().contains(":"))
+                //           System.out.println( "||  " + sname + " - " +  sauthor);
+            }
+            try{
+                if ( completeList.get(n+2).toString().contains(":"))
                     n=n+1;
 
-           }catch(Exception e){
+            }catch(Exception e){
                 break;
-           }
+            }
 
         }
 
@@ -142,17 +137,12 @@ public class Parser {
         String [] URLTokens = imgURL.split("/");
         String filename = URLTokens[URLTokens.length - 2];
         try {
-
             saveImage(BASE_ADDRESS + imgURL,"images/" + "what-song " + filename + ".jpg");
-
-
         } catch (IOException e) {
             System.out.println("saving image error");
             e.printStackTrace();
         }
         return filename;
-
-
     }
 
     private static void saveImage(String imageUrl, String destinationFile) throws IOException {
@@ -189,10 +179,10 @@ public class Parser {
 
     }
 
-    private static void main(String [] args) {
+    public static void main(String [] args) {
         Document doc;
         try {
-             parse(start, end);
+            parse(2, 3);
             save();
 
         }
