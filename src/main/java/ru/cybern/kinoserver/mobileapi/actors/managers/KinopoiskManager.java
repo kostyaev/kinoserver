@@ -3,6 +3,8 @@ package ru.cybern.kinoserver.mobileapi.actors.managers;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import akka.japi.Creator;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Command;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
@@ -22,7 +24,9 @@ import java.util.LinkedList;
 
 public class KinopoiskManager extends UntypedActor {
 
-    IParserBean parserBean;
+    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+
+    private IParserBean parserBean;
 
     private int pageNumber;
 
@@ -47,7 +51,6 @@ public class KinopoiskManager extends UntypedActor {
         this.parserBean = parserBean;
     }
 
-
     @Override
     public void preStart() {
         count = 0;
@@ -59,7 +62,7 @@ public class KinopoiskManager extends UntypedActor {
 
         while(count < max) {
             Page page = getFreePage();
-            System.out.println("Starting worker for page: " + page);
+            log.info("Starting worker for page: " + page);
             ActorRef worker = getContext().actorOf(Props.create(KinopoiskWorker.class), "kinopoisk" + count++);
             worker.tell(page, getSelf());
         }
@@ -69,7 +72,7 @@ public class KinopoiskManager extends UntypedActor {
 
     private Page getFreePage() {
         Page p = freePages.poll();
-        System.out.println("Page size for now is: " + freePages.size());
+        log.info("Page size for now is: " + freePages.size());
         return p;
     }
 
@@ -83,14 +86,14 @@ public class KinopoiskManager extends UntypedActor {
                 count--;
             }
       } else if(message instanceof HashMap) {
-          System.out.println("Received data from worker: " + sender().toString());
+          log.info("Received data from worker: " + sender().toString());
           if(!freePages.isEmpty()) {
               sender().tell(getFreePage(), getSelf());
           } else {
               sender().tell(Command.STOP, getSelf());
               count--;
           }
-          System.out.println("Собрано фильмов: " + ((HashMap) message).size());
+          log.info("Собрано фильмов: " + ((HashMap) message).size());
           parserBean.update((HashMap<String,Movie>) message);
 
 

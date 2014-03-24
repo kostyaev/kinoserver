@@ -1,5 +1,6 @@
 package ru.cybern.kinoserver.parsers.kinopoisk;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,7 +16,10 @@ import java.util.List;
 
 public class Parser {
 
+    private static final Logger logger = Logger.getLogger(Parser.class);
+
     private final String BASE_ADDRESS = "http://www.kinopoisk.ru";
+
     private HashMap<String,Movie> movieLibrary;
 
     private static Document connect(String addr) throws IOException {
@@ -45,11 +49,11 @@ public class Parser {
             {
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
                 String movName = moviesElems.get(j).text();
-                System.out.println(movName);
+                logger.info(movName);
 
               List<Soundtrack> gotSounds = getSounds(movUrl);
                 if ( gotSounds != null ){
-                Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl), Integer.parseInt(yearElems.get(j).text()));
+                Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl),Integer.parseInt(yearElems.get(j).text()));
                 movieLibrary.put(movName, curMovie);
               }
             }

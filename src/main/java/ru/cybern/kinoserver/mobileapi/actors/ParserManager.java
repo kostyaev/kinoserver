@@ -23,9 +23,9 @@ public class ParserManager {
         system.actorOf(Props.create(Terminator.class, a), "terminator");
     }
 
-    public void startSTCollect() { }
+    public void startSTCollect() {}
 
-    public void startWhatSong() { }
+    public void startWhatSong() {}
 
     public static class Terminator extends UntypedActor {
 

@@ -3,6 +3,8 @@ package ru.cybern.kinoserver.mobileapi.actors.workers;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Command;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
 import ru.cybern.kinoserver.parsers.kinopoisk.Parser;
@@ -14,6 +16,8 @@ import java.util.HashMap;
 
 public class KinopoiskWorker extends UntypedActor {
 
+    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+
     private Parser parser = new Parser();
 
 
@@ -22,7 +26,7 @@ public class KinopoiskWorker extends UntypedActor {
         if(message instanceof Page) {
             int page = ((Page) message).getPageNum();
             HashMap<String,Movie> lib = parser.parse(page, page);
-            System.out.println("Page is done");
+            log.info("Page is done");
             sender().tell(lib, self());
         } else if (message.equals(Command.STOP))
             getContext().stop(getSelf());
