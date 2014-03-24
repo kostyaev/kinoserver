@@ -15,15 +15,17 @@ import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-@Startup
-@Singleton
+@Stateless
 public class ParserBean implements IParserBean{
+    public static final String JNDI_NAME = "java:module/RuleBean";
+
     @Inject
     IFilmBean filmBean;
 
@@ -50,36 +52,29 @@ public class ParserBean implements IParserBean{
         }
     }
 
-    //TEST method
-    //@PostConstruct
     @Override
-    public void update() {
-        try {
-            HashMap<String,Movie> movieLib =  Parser.parse(1, 2);
-            for(String movieName : movieLib.keySet()) {
-                Movie movie = movieLib.get(movieName);
-                if(filmBean.isExist(movieName, movie.getYear())) continue;
-                FilmEntity filmEntity = new FilmEntity();
-                filmEntity.setImg(movie.getImgName());
-                filmEntity.setName(movieName);
-                filmEntity.setYear(movie.getYear());
-                filmEntity.setRating(0.0);
+    public void update(HashMap<String,Movie> movieLib) {
+        System.out.print("Accessins DB...");
+        for(String movieName : movieLib.keySet()) {
+            Movie movie = movieLib.get(movieName);
+            if(filmBean.isExist(movieName, movie.getYear())) continue;
+            FilmEntity filmEntity = new FilmEntity();
+            filmEntity.setImg(movie.getImgName());
+            filmEntity.setName(movieName);
+            filmEntity.setYear(movie.getYear());
+            filmEntity.setRating(0.0);
 
-                FilmEntity addedFilm = filmBean.saveFilm(filmEntity);
+            FilmEntity addedFilm = filmBean.saveFilm(filmEntity);
 
-                if(movie.getSounds() != null)
-                    addMusic(movie.getSounds(), addedFilm);
+            if(movie.getSounds() != null)
+                addMusic(movie.getSounds(), addedFilm);
 
-                FilmHistoryEntity filmHistoryEntity = new FilmHistoryEntity();
-                filmHistoryEntity.setDateTime(new Date());
-                filmHistoryEntity.setFilm(filmEntity);
-                filmHistoryEntity.setMethod(Update.Method.ADD.name());
+            FilmHistoryEntity filmHistoryEntity = new FilmHistoryEntity();
+            filmHistoryEntity.setDateTime(new Date());
+            filmHistoryEntity.setFilm(filmEntity);
+            filmHistoryEntity.setMethod(Update.Method.ADD.name());
 
-                filmBean.saveFilmHistory(filmHistoryEntity);
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            filmBean.saveFilmHistory(filmHistoryEntity);
         }
 
     }

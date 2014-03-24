@@ -1,6 +1,7 @@
 package ru.cybern.kinoserver.mobileapi;
 
 import org.hibernate.Hibernate;
+import ru.cybern.kinoserver.mobileapi.actors.ParserManager;
 import ru.cybern.kinoserver.mobileapi.controllers.IFilmBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IMusicBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
@@ -164,4 +165,15 @@ public class MobileService {
     public UpdateResponse getAllUpdates() {
         return getUpdates(INIT_DATE);
     }
+
+    @Inject
+    ParserManager manager;
+
+
+    @GET
+    @Path("start")
+    public void start() {
+        manager.startKinopoisk();
+    }
+
 }

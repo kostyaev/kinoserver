@@ -1,8 +1,10 @@
 package ru.cybern.kinoserver.mobileapi.actors.helpers;
 
 
-public class Page {
-    private int pageNum;
+import java.io.Serializable;
+
+public class Page implements Serializable {
+    private final int pageNum;
 
     public Page(int pageNum) {
         this.pageNum = pageNum;
@@ -12,7 +14,9 @@ public class Page {
         return pageNum;
     }
 
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
+    @Override
+    public String toString() {
+        return Integer.toString(pageNum);
     }
+
 }
