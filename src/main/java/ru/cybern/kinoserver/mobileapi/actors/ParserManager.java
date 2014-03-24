@@ -6,31 +6,26 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Command;
 import ru.cybern.kinoserver.mobileapi.actors.managers.KinopoiskManager;
+import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
 
 import javax.ejb.Singleton;
+import javax.inject.Inject;
 
 @Singleton
 public class ParserManager {
 
+    @Inject
+    private IParserBean parserBean;
 
-    public static void startKinopoisk() {
+    public void startKinopoisk() {
         ActorSystem system = ActorSystem.create("parsers");
-        ActorRef a = system.actorOf(Props.create(KinopoiskManager.class), "kinopoisk");
+        ActorRef a = system.actorOf(KinopoiskManager.props(parserBean), "kinopoisk");
         system.actorOf(Props.create(Terminator.class, a), "terminator");
-
     }
 
+    public void startSTCollect() { }
 
-
-    public void startSTCollect() {
-
-    }
-
-    public void startWhatSong() {
-
-    }
-
-
+    public void startWhatSong() { }
 
     public static class Terminator extends UntypedActor {
 

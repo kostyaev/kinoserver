@@ -3,6 +3,7 @@ package ru.cybern.kinoserver.mobileapi.actors.managers;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+import akka.japi.Creator;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Command;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
 import ru.cybern.kinoserver.mobileapi.actors.workers.KinopoiskWorker;
@@ -21,7 +22,6 @@ import java.util.LinkedList;
 
 public class KinopoiskManager extends UntypedActor {
 
-    @Resource(mappedName = ParserBean.JNDI_NAME)
     IParserBean parserBean;
 
     private int pageNumber;
@@ -31,6 +31,21 @@ public class KinopoiskManager extends UntypedActor {
     private int count;
 
     private int max;
+
+    public static Props props(final IParserBean parserBean) {
+        return Props.create(new Creator<KinopoiskManager>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public KinopoiskManager create() throws Exception {
+                return new KinopoiskManager(parserBean);
+            }
+        });
+    }
+
+    public KinopoiskManager(IParserBean parserBean) {
+        this.parserBean = parserBean;
+    }
 
 
     @Override

@@ -13,18 +13,19 @@ import ru.cybern.kinoserver.parsers.kinopoisk.Parser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
+import javax.ejb.Asynchronous;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 @Stateless
-public class ParserBean implements IParserBean{
-    public static final String JNDI_NAME = "java:module/RuleBean";
+public class ParserBean implements IParserBean {
 
     @Inject
     IFilmBean filmBean;

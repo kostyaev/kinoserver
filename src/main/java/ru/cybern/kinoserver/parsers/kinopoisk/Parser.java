@@ -15,8 +15,8 @@ import java.util.List;
 
 public class Parser {
 
-    private static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
-    private static HashMap<String,Movie> movieLibrary;
+    private final String BASE_ADDRESS = "http://www.kinopoisk.ru";
+    private HashMap<String,Movie> movieLibrary;
 
     private static Document connect(String addr) throws IOException {
         // Подключение к ресурсу
@@ -27,7 +27,7 @@ public class Parser {
         return doc;
     }
 
-    public static HashMap<String,Movie> parse(int from, int to) throws IOException {
+    public HashMap<String,Movie> parse(int from, int to) throws IOException {
         movieLibrary = new HashMap<String, Movie>();
         String startURL = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
         Document page = connect(startURL);
@@ -57,13 +57,13 @@ public class Parser {
         return movieLibrary;
     }
 
-    private static int getAmount() throws IOException {
+    private int getAmount() throws IOException {
         String url = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
         Document page = connect(url);
         return Integer.parseInt(page.select("div.pagesFromTo").get(0).text().split(" из ")[1]);
     }
 
-    private static String getImage(String url) throws IOException {
+    private String getImage(String url) throws IOException {
         Document page = connect(url);
         Elements img = page.getElementsByAttributeValue("style", "border:5px solid #ccc");
         if (img.isEmpty()) return null;
@@ -79,7 +79,7 @@ public class Parser {
         return filename;
     }
 
-    private static List<Soundtrack> getSounds(String url) throws IOException {
+    private List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         Document page = connect(url);
         Elements soundBlocks = page.getElementsByAttributeValue("style", "color:#f60");
@@ -97,7 +97,7 @@ public class Parser {
     }
 
 
-    private static void saveImage(String imageUrl, String destinationFile) throws IOException {
+    private void saveImage(String imageUrl, String destinationFile) throws IOException {
         File dir = new File("images/");
         dir.mkdirs();
 
@@ -117,7 +117,7 @@ public class Parser {
     }
 
 
-    private static void save() throws FileNotFoundException, UnsupportedEncodingException {
+    private void save() throws FileNotFoundException, UnsupportedEncodingException {
         PrintWriter writer = new PrintWriter("database.txt", "UTF-8");
         for(String movieName : movieLibrary.keySet()) {
             writer.println(movieName);
@@ -132,17 +132,6 @@ public class Parser {
         }
         writer.flush();
         writer.close();
-    }
-
-    private static void main(String [] args) {
-        Document doc;
-        try {
-            parse(1, 2);
-            save();
-        }
-         catch (IOException e) {
-            e.printStackTrace();
-         }
     }
 
 }
