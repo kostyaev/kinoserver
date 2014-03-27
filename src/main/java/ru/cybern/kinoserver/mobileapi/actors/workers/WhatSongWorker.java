@@ -21,6 +21,8 @@ public class WhatSongWorker extends UntypedActor {
         }
         else if (message.equals(Command.STOP))
             getContext().stop(self());
+        else
+            unhandled(message);
 
 
     }

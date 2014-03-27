@@ -1,16 +1,12 @@
 package ru.cybern.kinoserver.mobileapi.actors.workers;
 
-import akka.actor.ActorRef;
-import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import ru.cybern.kinoserver.mobileapi.actors.helpers.Command;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
 import ru.cybern.kinoserver.parsers.kinopoisk.Parser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 
 
@@ -22,15 +18,20 @@ public class KinopoiskWorker extends UntypedActor {
 
 
     @Override
+    public void postStop() {
+        log.info("Stopping actor...................");
+    }
+
+
+    @Override
     public void onReceive(Object message) throws Exception {
         if(message instanceof Page) {
             int page = ((Page) message).getPageNum();
             HashMap<String,Movie> lib = parser.parse(page, page);
             log.info("Page is done");
             sender().tell(lib, self());
-        } else if (message.equals(Command.STOP))
-            getContext().stop(getSelf());
-
-
+        }
+        else
+            unhandled(message);
     }
 }

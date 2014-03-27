@@ -1,10 +1,11 @@
 package ru.cybern.kinoserver.mobileapi.actors;
 
-import akka.Main;
-import akka.actor.*;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Terminated;
+import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import ru.cybern.kinoserver.mobileapi.actors.helpers.Command;
 import ru.cybern.kinoserver.mobileapi.actors.managers.KinopoiskManager;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
 
@@ -17,10 +18,12 @@ public class ParserManager {
     @Inject
     private IParserBean parserBean;
 
+    private int kinopoiskPageCount = 2;
+
     public void startKinopoisk() {
         ActorSystem system = ActorSystem.create("parsers");
-        ActorRef a = system.actorOf(KinopoiskManager.props(parserBean), "kinopoisk");
-        system.actorOf(Props.create(Terminator.class, a), "terminator");
+        ActorRef a = system.actorOf(KinopoiskManager.props(parserBean, kinopoiskPageCount), "kinopoisk");
+        //system.actorOf(Props.create(Terminator.class, a), "terminator");
     }
 
     public void startSTCollect() {}

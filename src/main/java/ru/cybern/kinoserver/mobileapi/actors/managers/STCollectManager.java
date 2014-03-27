@@ -48,6 +48,8 @@ public class STCollectManager extends UntypedActor {
                 sender().tell(Command.STOP, self());
             }
         }
+        else
+            unhandled(message);
 
     }
 }

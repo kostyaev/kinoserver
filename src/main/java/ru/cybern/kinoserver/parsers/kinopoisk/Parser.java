@@ -23,7 +23,6 @@ public class Parser {
     private HashMap<String,Movie> movieLibrary;
 
     private static Document connect(String addr) throws IOException {
-        // Подключение к ресурсу
         Document doc = Jsoup.connect(addr)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                 .referrer("http://www.google.com")
@@ -33,8 +32,8 @@ public class Parser {
 
     public HashMap<String,Movie> parse(int from, int to) throws IOException {
         movieLibrary = new HashMap<String, Movie>();
-        String startURL = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
-        Document page = connect(startURL);
+        String startURL;
+        Document page;
         startURL =  BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/page/";
         for (int i = from; i <= to; i++) //14
         {
@@ -44,18 +43,17 @@ public class Parser {
             Elements yearElems = page.select("a.orange");
             Object [] years = yearElems.toArray();
 
-//            for (int j = 0; j < yearElems.size(); j++)
-            for (int j = 0; j < 50; j++)
+//          for (int j = 0; j < yearElems.size(); j++)
+            for (int j = 0; j < 10; j++)
             {
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
                 String movName = moviesElems.get(j).text();
-                logger.info(movName);
-
-              List<Soundtrack> gotSounds = getSounds(movUrl);
+                logger.info("received " + (j+1) + " movies");
+                List<Soundtrack> gotSounds = getSounds(movUrl);
                 if ( gotSounds != null ){
-                Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl),Integer.parseInt(yearElems.get(j).text()));
-                movieLibrary.put(movName, curMovie);
-              }
+                    Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl),Integer.parseInt(yearElems.get(j).text()));
+                    movieLibrary.put(movName, curMovie);
+                }
             }
         }
         return movieLibrary;

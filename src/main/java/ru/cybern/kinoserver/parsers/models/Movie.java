@@ -10,14 +10,12 @@ public class Movie {
     public Movie(List<Soundtrack> sounds, String imgName) {
         this.sounds = sounds;
         this.imgName = imgName;
-
     }
 
     public Movie(List<Soundtrack> sounds, String imgName, int year) {
         this.sounds = sounds;
         this.imgName = imgName;
         this.year = year;
-
     }
 
     public int getYear() {
