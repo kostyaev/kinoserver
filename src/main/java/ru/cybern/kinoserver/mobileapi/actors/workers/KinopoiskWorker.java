@@ -19,7 +19,7 @@ public class KinopoiskWorker extends UntypedActor {
 
     @Override
     public void postStop() {
-        log.info("Stopping actor...................");
+        log.info("Stopping kinopoisk actor...");
     }
 
 

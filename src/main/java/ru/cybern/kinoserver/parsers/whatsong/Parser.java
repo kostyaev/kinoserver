@@ -59,10 +59,12 @@ public class Parser {
         Document page = connect(startURL);
         Elements pagemoviesElems;
         Elements pageElems = page.select("a.hoverEffect");
+
         if(start < 1)
             start = 1;
         if(end > pageElems.size() - 1)
             end = pageElems.size();
+
         for (int i = start; i <= end; i++){
             String url = BASE_ADDRESS + pageElems.get(i).attr("href");
             page = connect(url);
@@ -78,7 +80,7 @@ public class Parser {
                 if ( sounds != null){
                     Movie curMovie = new Movie(sounds,getImage(movUrl),year);
                     movieLibrary.put(movName, curMovie);
-                    save();
+                    //save();
                 }
             }
         }
@@ -101,6 +103,7 @@ public class Parser {
         String sauthor=null;
         String sname=null;
         Elements completeList = page.select("tr.movie-play-row").select("h4");
+        //@FIXME (ava.lang.IndexOutOfBoundsException: Index: 0, Size: 0)
         for (Element sound = completeList.get(n) ; n<completeList.size() ; n=n+1  ) {
             try {
                 completeList.get(n+1);
@@ -180,9 +183,8 @@ public class Parser {
     }
 
     public static void main(String [] args) {
-        Document doc;
         try {
-            parse(2, 3);
+            parse(65, 65);
             save();
 
         }

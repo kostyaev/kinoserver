@@ -7,6 +7,7 @@ import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import ru.cybern.kinoserver.mobileapi.actors.managers.KinopoiskManager;
+import ru.cybern.kinoserver.mobileapi.actors.managers.WhatsongManager;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
 
 import javax.ejb.Singleton;
@@ -18,17 +19,23 @@ public class ParserManager {
     @Inject
     private IParserBean parserBean;
 
-    private int kinopoiskPageCount = 2;
+    private int kinopoiskPageCount = 14;
+
+    private int whatsongPageCount = 20;
 
     public void startKinopoisk() {
         ActorSystem system = ActorSystem.create("parsers");
-        ActorRef a = system.actorOf(KinopoiskManager.props(parserBean, kinopoiskPageCount), "kinopoisk");
+        ActorRef a = system.actorOf(KinopoiskManager.props(parserBean, kinopoiskPageCount), "kinopoiskManager");
+        //system.actorOf(Props.create(Terminator.class, a), "terminator");
+    }
+
+    public void startWhatsong() {
+        ActorSystem system = ActorSystem.create("parsers");
+        ActorRef a = system.actorOf(WhatsongManager.props(parserBean, whatsongPageCount), "whatsongManager");
         //system.actorOf(Props.create(Terminator.class, a), "terminator");
     }
 
     public void startSTCollect() {}
-
-    public void startWhatSong() {}
 
     public static class Terminator extends UntypedActor {
 

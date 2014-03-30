@@ -173,7 +173,8 @@ public class MobileService {
     @GET
     @Path("start")
     public void start() {
-        manager.startKinopoisk();
+        //manager.startKinopoisk();
+        manager.startWhatsong();
     }
 
 }
