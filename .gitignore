@@ -9,4 +9,5 @@ project/
 *.iml
 *.txt
 *.jpg
-
+images/
+.DS_Store

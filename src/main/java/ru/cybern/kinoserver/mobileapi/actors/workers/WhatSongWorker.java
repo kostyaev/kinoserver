@@ -1,29 +1,37 @@
 package ru.cybern.kinoserver.mobileapi.actors.workers;
 
 import akka.actor.UntypedActor;
-import ru.cybern.kinoserver.mobileapi.actors.helpers.Command;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
+import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.whatsong.Parser;
 
+import java.util.HashMap;
 
-public class WhatSongWorker extends UntypedActor {
+
+public class WhatsongWorker extends UntypedActor {
+
+    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+
+    private Parser parser = new Parser();
+
 
     @Override
-    public void preStart() {
-        context().parent().tell(Command.DONE, self());
+    public void postStop() {
+        log.info("Stopping whatsong actor...");
     }
+
 
     @Override
     public void onReceive(Object message) throws Exception {
         if(message instanceof Page) {
             int page = ((Page) message).getPageNum();
-            Parser.parse(page, page);
+            HashMap<String,Movie> lib = parser.parse(page, page);
+            log.info("Page is done");
+            sender().tell(lib, self());
         }
-        else if (message.equals(Command.STOP))
-            getContext().stop(self());
         else
             unhandled(message);
-
-
     }
 }

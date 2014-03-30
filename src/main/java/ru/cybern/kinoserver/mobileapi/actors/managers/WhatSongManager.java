@@ -3,53 +3,81 @@ package ru.cybern.kinoserver.mobileapi.actors.managers;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import ru.cybern.kinoserver.mobileapi.actors.helpers.Command;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
+import akka.japi.Creator;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
-import ru.cybern.kinoserver.mobileapi.actors.workers.WhatSongWorker;
+import ru.cybern.kinoserver.mobileapi.actors.workers.WhatsongWorker;
+import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
+import ru.cybern.kinoserver.parsers.models.Movie;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
-public class WhatSongManager extends UntypedActor {
 
-    private int pageNumber;
+public class WhatsongManager extends UntypedActor {
+
+    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+
+    private IParserBean parserBean;
+
+    private int pageCount;
+
     private LinkedList<Page> freePages;
-    private int count;
-    private int max;
+
+    private int workersCount;
+
+    public static Props props(final IParserBean parserBean, final int pageCount) {
+        return Props.create(new Creator<WhatsongManager>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public WhatsongManager create() throws Exception {
+                return new WhatsongManager(parserBean, pageCount);
+            }
+        });
+    }
+
+    public WhatsongManager(IParserBean parserBean, int pageCount) {
+        this.parserBean = parserBean;
+        this.pageCount = pageCount;
+        this.workersCount = pageCount;
+    }
 
     @Override
     public void preStart() {
-        count = 0;
-        pageNumber = 14;
-        max = pageNumber;
-    }
-
-    private void genPages() {
         freePages = new LinkedList<>();
-        for(int i = 1; i < pageNumber; i++)
+        for(int i = 1; i <= pageCount; i++)
             freePages.add(new Page(i));
+        for(int i = 0; i < workersCount; i++) {
+            Page page = getFreePage();
+            log.info("Starting worker for page: " + page);
+            ActorRef worker = getContext().actorOf(Props.create(WhatsongWorker.class), "kinopoisk" + i);
+            worker.tell(page, getSelf());
+        }
     }
 
     private Page getFreePage() {
-        return freePages.poll();
+        Page p = freePages.poll();
+        log.info("Page size is: " + freePages.size());
+        return p;
     }
 
     @Override
     public void onReceive(Object message) throws Exception {
-        if(message.equals(Command.START)){
-            while(count < max) {
-                ActorRef worker = getContext().actorOf(Props.create(WhatSongWorker.class), "whatsong" + count++);
-                worker.tell(getFreePage(), self());
+        if(message instanceof HashMap) {
+            log.info("Received data from Worker: " + sender().toString());
+            if(!freePages.isEmpty()) {
+                sender().tell(getFreePage(), getSelf());
+            } else {
+                workersCount--;
             }
-        }
-        else if(message.equals(Command.DONE)) {
-            if(!freePages.isEmpty())
-                sender().tell(getFreePage(), self());
-            else {
-                sender().tell(Command.STOP, self());
-            }
+            log.info("Gathered Movies: " + ((HashMap) message).size());
+            parserBean.update((HashMap<String,Movie>) message);
         }
         else
             unhandled(message);
-
+        if(workersCount <= 0 )
+            getContext().stop(getSelf());
     }
 }
