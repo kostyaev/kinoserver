@@ -1,31 +1,32 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
 public class FilmMusic {
-    private int id;
-    private int filmId;
-    private int musicId;
 
-    public int getId() {
+    private Integer id;
+    private Film film;
+    private Music music;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getFilmId() {
-        return filmId;
+    public Film getFilm() {
+        return film;
     }
 
-    public void setFilmId(int filmId) {
-        this.filmId = filmId;
+    public void setFilm(Film film) {
+        this.film = film;
     }
 
-    public int getMusicId() {
-        return musicId;
+    public Music getMusic() {
+        return music;
     }
 
-    public void setMusicId(int musicId) {
-        this.musicId = musicId;
+    public void setMusic(Music music) {
+        this.music = music;
     }
 }

@@ -1,16 +1,17 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
 public class Music {
-    private int id;
-    private String name;
-    private int performerId;
-    private double rating;
 
-    public int getId() {
+    private Integer id;
+    private String name;
+    private Performer performer;
+    private Double rating;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -22,19 +23,19 @@ public class Music {
         this.name = name;
     }
 
-    public int getPerformerId() {
-        return performerId;
+    public Performer getPerformer() {
+        return performer;
     }
 
-    public void setPerformerId(int performerId) {
-        this.performerId = performerId;
+    public void setPerformer(Performer performer) {
+        this.performer = performer;
     }
 
-    public double getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 }

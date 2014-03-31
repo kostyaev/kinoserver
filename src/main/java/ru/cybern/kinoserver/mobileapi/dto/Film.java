@@ -1,17 +1,18 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
 public class Film {
-    private int id;
-    private String name;
-    private int year;
-    private String img;
-    private double rating;
 
-    public int getId() {
+    private Integer id;
+    private String name;
+    private Integer year;
+    private String img;
+    private Double rating;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -23,11 +24,11 @@ public class Film {
         this.name = name;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
@@ -39,11 +40,11 @@ public class Film {
         this.img = img;
     }
 
-    public double getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 }

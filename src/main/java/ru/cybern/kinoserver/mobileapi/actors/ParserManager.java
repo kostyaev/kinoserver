@@ -19,7 +19,7 @@ public class ParserManager {
     @Inject
     private IParserBean parserBean;
 
-    private int kinopoiskPageCount = 14;
+    private int kinopoiskPageCount = 2;
 
     private int whatsongPageCount = 20;
 

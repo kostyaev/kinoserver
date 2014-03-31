@@ -9,8 +9,8 @@ public class Update {
     public static enum Method {ADD, DELETE, UPDATE}
     private Method method;
     private List<Favorites> favorites;
-    private List<Film> films;
-    private List<Music> music;
+    //private List<Film> films;
+    //private List<Music> music;
     private List<FilmMusic> filmMusic;
     private List<Performer> performers;
     private Date updateDate;
@@ -30,22 +30,6 @@ public class Update {
 
     public void setFavorites(List<Favorites> favorites) {
         this.favorites = favorites;
-    }
-
-    public List<Film> getFilms() {
-        return films;
-    }
-
-    public void setFilms(List<Film> films) {
-        this.films = films;
-    }
-
-    public List<Music> getMusic() {
-        return music;
-    }
-
-    public void setMusic(List<Music> music) {
-        this.music = music;
     }
 
     public List<FilmMusic> getFilmMusic() {

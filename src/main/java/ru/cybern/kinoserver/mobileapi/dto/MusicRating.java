@@ -1,51 +1,52 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class MusicRating {
-    private int id;
-    private int musicId;
-    private int userId;
-    private int value;
-    private Date dateTime;
 
-    public int getId() {
+    private Integer id;
+    private Music music;
+    private User user;
+    private Integer value;
+    private Timestamp dateTime;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getMusicId() {
-        return musicId;
+    public Music getMusic() {
+        return music;
     }
 
-    public void setMusicId(int musicId) {
-        this.musicId = musicId;
+    public void setMusic(Music music) {
+        this.music = music;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(Integer value) {
         this.value = value;
     }
 
-    public Date getDateTime() {
+    public Timestamp getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Date dateTime) {
+    public void setDateTime(Timestamp dateTime) {
         this.dateTime = dateTime;
     }
 }

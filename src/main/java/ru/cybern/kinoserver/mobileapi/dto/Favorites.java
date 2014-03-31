@@ -4,33 +4,35 @@ import java.util.Date;
 
 
 public class Favorites {
-    private int id;
-    private int userId;
-    private int musicId;
+
+    private Integer id;
+    private User user;
+    private Music music;
     private Date dateTime;
 
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public int getMusicId() {
-        return musicId;
+    public Music getMusic() {
+        return music;
     }
 
-    public void setMusicId(int musicId) {
-        this.musicId = musicId;
+    public void setMusic(Music music) {
+        this.music = music;
     }
 
     public Date getDateTime() {

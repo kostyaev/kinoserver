@@ -48,22 +48,51 @@ public class MobileService {
 
     @Inject
     IFilmBean filmBean;
+
     @Inject
     IMusicBean musicBean;
+
     @Inject
     IUserBean userBean;
+
     @Inject
     IParserBean parserBean;
 
     public static final String INIT_DATE = "2014-01-01";
+
+
+    public Performer getPerformerFrom(PerformerEntity performerEntity) {
+        Performer performer = new Performer();
+        performer.setId(performerEntity.getId());
+        performer.setName(performerEntity.getName());
+        return performer;
+    }
+
+    public Music getMusicFrom(MusicEntity musicEntity) {
+        Music musicDto = new Music();
+        musicDto.setId(musicEntity.getId());
+        musicDto.setName(musicEntity.getName());
+        musicDto.setPerformer(getPerformerFrom(musicEntity.getPerformer()));
+        return musicDto;
+    }
+
+    public Film getFilmFrom(FilmEntity filmEntity) {
+        Film filmDto = new Film();
+        filmDto.setId(filmEntity.getId());
+        filmDto.setImg(filmEntity.getImg());
+        filmDto.setName(filmEntity.getName());
+        filmDto.setRating(filmEntity.getRating());
+        filmDto.setYear(filmEntity.getYear());
+        return filmDto;
+    }
 
     private void addAllFilmMusic(List<FilmMusicEntity> from, List<FilmMusic> to ) {
         for(FilmMusicEntity entry : from) {
             FilmMusic dto = new FilmMusic();
             Hibernate.initialize(entry);
             dto.setId(entry.getId());
-            dto.setFilmId(entry.getFilm().getId());
-            dto.setMusicId(entry.getMusic().getId());
+            dto.setFilm(getFilmFrom(entry.getFilm()));
+            dto.setMusic(getMusicFrom(entry.getMusic()));
             to.add(dto);
         }
     }
@@ -72,8 +101,8 @@ public class MobileService {
         Music dto = new Music();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
-        dto.setPerformerId(entity.getPerformer().getId());
-        dto.setRating(0); //FIXME
+        dto.setPerformer(getPerformerFrom(entity.getPerformer()));
+        dto.setRating(0.0); //FIXME
         list.add(dto);
     }
 
@@ -119,8 +148,8 @@ public class MobileService {
         Update update = new Update();
         update.setFavorites(favorites);
         update.setFilmMusic(filmMusic);
-        update.setFilms(films);
-        update.setMusic(music);
+        //update.setFilms(films);
+        //update.setMusic(music);
         update.setPerformers(performers);
         update.setUpdateDate(new Date());
         update.setMethod(Update.Method.ADD);
@@ -173,8 +202,8 @@ public class MobileService {
     @GET
     @Path("start")
     public void start() {
-        //manager.startKinopoisk();
-        manager.startWhatsong();
+        manager.startKinopoisk();
+        //manager.startWhatsong();
     }
 
 }
