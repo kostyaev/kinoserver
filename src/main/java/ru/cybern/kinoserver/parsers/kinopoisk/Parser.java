@@ -13,12 +13,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
 
     private static final Logger logger = Logger.getLogger(Parser.class);
 
-    private final String BASE_ADDRESS = "http://www.kinopoisk.ru";
+    private static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
 
     private HashMap<String,Movie> movieLibrary;
 
@@ -43,8 +45,7 @@ public class Parser {
             Elements yearElems = page.select("a.orange");
             Object [] years = yearElems.toArray();
 
-//          for (int j = 0; j < yearElems.size(); j++)
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < yearElems.size(); j++)
             {
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
                 String movName = moviesElems.get(j).text();
@@ -59,10 +60,23 @@ public class Parser {
         return movieLibrary;
     }
 
-    private int getAmount() throws IOException {
-        String url = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/25/";
+    private String extractNumber(String str) {
+        Pattern pattern = Pattern.compile("^.*/(\\d+)/");
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find())
+        {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    public int getAmount() throws IOException {
+        String url = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/200/";
         Document page = connect(url);
-        return Integer.parseInt(page.select("div.pagesFromTo").get(0).text().split(" из ")[1]);
+        Elements elem = page.select("li.arr");
+        String lastPageURL = page.select("li.arr").get(1).select("a").attr("href");
+        int pageCnt = Integer.parseInt(extractNumber(lastPageURL));
+        return pageCnt;
     }
 
     private String getImage(String url) throws IOException {
@@ -98,42 +112,19 @@ public class Parser {
         return sounds;
     }
 
-
     private void saveImage(String imageUrl, String destinationFile) throws IOException {
         File dir = new File("images/");
         dir.mkdirs();
-
         URL url = new URL(imageUrl);
         InputStream is = url.openStream();
         OutputStream os = new FileOutputStream(destinationFile);
-
         byte[] b = new byte[2048];
         int length;
-
         while ((length = is.read(b)) != -1) {
             os.write(b, 0, length);
         }
-
         is.close();
         os.close();
-    }
-
-
-    private void save() throws FileNotFoundException, UnsupportedEncodingException {
-        PrintWriter writer = new PrintWriter("database.txt", "UTF-8");
-        for(String movieName : movieLibrary.keySet()) {
-            writer.println(movieName);
-            if(movieLibrary.get(movieName).getSounds() != null) {
-                for(Soundtrack sound : movieLibrary.get(movieName).getSounds()) {
-                    writer.println("   Song: " + sound.song);
-                    writer.println("   Author: " + sound.author);
-                    writer.println();
-                }
-            }
-            writer.println("------------------------------------");
-        }
-        writer.flush();
-        writer.close();
     }
 
 }
