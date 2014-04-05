@@ -5,11 +5,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import ru.cybern.kinoserver.parsers.PATH;
+import ru.cybern.kinoserver.parsers.Global;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -58,15 +62,14 @@ public class Parser {
             page = connect(url);
             Elements moviesElems = page.select("a.all");
             Elements yearElems = page.select("a.orange");
-            Object [] years = yearElems.toArray();
-
             for (int j = 0; j < yearElems.size(); j++)
             {
                 String movUrl = BASE_ADDRESS + moviesElems.get(j).attr("href");
                 String movName = moviesElems.get(j).text();
                 logger.info("received " + (j+1) + " movies");
                 List<Soundtrack> gotSounds = getSounds(movUrl);
-                if ( gotSounds != null ){
+                String image = getImage(movUrl);
+                if (gotSounds != null && image != null){
                     Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl),Integer.parseInt(yearElems.get(j).text()));
                     movieLibrary.put(movName, curMovie);
                 }
@@ -100,7 +103,7 @@ public class Parser {
         if (img.isEmpty()) return null;
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
-        String filename = URLTokens[URLTokens.length - 1];
+        String filename = Global.KINOPOISK_PREFIX + URLTokens[URLTokens.length - 1];
         if(saveImages)
             saveImage(imgURL, filename);
         return filename;
@@ -124,11 +127,11 @@ public class Parser {
     }
 
     private void saveImage(String imageUrl, String destinationFile) throws IOException {
-        File dir = new File(PATH.HOME_PATH + PATH.KINOPOISK_IMG_PATH);
+        File dir = new File(Global.HOME_PATH + Global.IMG_PATH);
         dir.mkdirs();
         URL url = new URL(imageUrl);
         InputStream is = url.openStream();
-        OutputStream os = new FileOutputStream(destinationFile);
+        OutputStream os = new FileOutputStream(Global.HOME_PATH + Global.IMG_PATH + destinationFile);
         byte[] b = new byte[2048];
         int length;
         while ((length = is.read(b)) != -1) {

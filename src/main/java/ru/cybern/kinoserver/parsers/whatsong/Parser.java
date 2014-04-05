@@ -5,7 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import ru.cybern.kinoserver.parsers.PATH;
+import ru.cybern.kinoserver.parsers.Global;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
@@ -127,18 +127,18 @@ public class Parser {
         if (img.isEmpty()) return null;
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
-        String filename = URLTokens[URLTokens.length - 2];
+        String filename = Global.WHATSONG_PREFIX + URLTokens[URLTokens.length - 2];
         if (saveImages)
             saveImage(BASE_ADDRESS + imgURL, filename + ".jpg");
         return filename;
     }
 
     private void saveImage(String imageUrl, String destinationFile) throws IOException {
-        File dir = new File(PATH.HOME_PATH + PATH.WHATSONG_IMG_PATH);
+        File dir = new File(Global.HOME_PATH + Global.IMG_PATH);
         dir.mkdirs();
         URL url = new URL(imageUrl);
         InputStream is = url.openStream();
-        OutputStream os = new FileOutputStream(PATH.HOME_PATH + PATH.WHATSONG_IMG_PATH + destinationFile);
+        OutputStream os = new FileOutputStream(Global.HOME_PATH + Global.IMG_PATH + destinationFile);
         byte[] b = new byte[2048];
         int length;
         while ((length = is.read(b)) != -1) {
