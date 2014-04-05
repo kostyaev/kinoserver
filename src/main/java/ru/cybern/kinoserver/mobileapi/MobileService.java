@@ -127,7 +127,6 @@ public class MobileService {
         List<Favorites> favorites = new LinkedList<>();
         List<Film> films = new LinkedList<>();
         List<Music> music = new LinkedList<>();
-        List<Performer> performers = new LinkedList<>();
         List<FilmMusic> filmMusic = new LinkedList<>();
 
         for(FilmHistoryEntity historyEntry : filmHistories) {
@@ -138,9 +137,7 @@ public class MobileService {
             addAllFilmMusic(filmMusicData, filmMusic);
             for(FilmMusicEntity filmMusicEntry : filmMusicData) {
                 MusicEntity musicEntry = filmMusicEntry.getMusic();
-                PerformerEntity performerEntry = musicEntry.getPerformer();
                 addMusic(musicEntry, music);
-                addPerformer(performerEntry, performers);
             }
             addFilm(filmEntry, films);
         }
@@ -148,9 +145,6 @@ public class MobileService {
         Update update = new Update();
         update.setFavorites(favorites);
         update.setFilmMusic(filmMusic);
-        //update.setFilms(films);
-        //update.setMusic(music);
-        update.setPerformers(performers);
         update.setUpdateDate(new Date());
         update.setMethod(Update.Method.ADD);
 

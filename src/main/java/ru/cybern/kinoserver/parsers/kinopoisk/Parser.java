@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.cybern.kinoserver.parsers.PATH;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
@@ -23,6 +24,20 @@ public class Parser {
     private static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
 
     private HashMap<String,Movie> movieLibrary;
+
+    private boolean saveImages;
+
+    public Parser(boolean saveImages) {
+        this.saveImages = saveImages;
+    }
+
+    public boolean isSaveImages() {
+        return saveImages;
+    }
+
+    public void setSaveImages(boolean saveImages) {
+        this.saveImages = saveImages;
+    }
 
     private static Document connect(String addr) throws IOException {
         Document doc = Jsoup.connect(addr)
@@ -70,7 +85,7 @@ public class Parser {
         return null;
     }
 
-    public int getAmount() throws IOException {
+    public int getLastPageNumber() throws IOException {
         String url = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/200/";
         Document page = connect(url);
         Elements elem = page.select("li.arr");
@@ -86,12 +101,8 @@ public class Parser {
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
         String filename = URLTokens[URLTokens.length - 1];
-        try {
-            saveImage(imgURL,"images/" + "kinopoisk " + filename);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if(saveImages)
+            saveImage(imgURL, filename);
         return filename;
     }
 
@@ -113,7 +124,7 @@ public class Parser {
     }
 
     private void saveImage(String imageUrl, String destinationFile) throws IOException {
-        File dir = new File("images/");
+        File dir = new File(PATH.HOME_PATH + PATH.KINOPOISK_IMG_PATH);
         dir.mkdirs();
         URL url = new URL(imageUrl);
         InputStream is = url.openStream();

@@ -9,17 +9,11 @@ import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
 import ru.cybern.kinoserver.mobileapi.dto.Update;
-import ru.cybern.kinoserver.parsers.kinopoisk.Parser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
-import javax.ejb.Asynchronous;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +49,6 @@ public class ParserBean implements IParserBean {
 
     @Override
     public void update(HashMap<String,Movie> movieLib) {
-        System.out.print("Accessins DB...");
         for(String movieName : movieLib.keySet()) {
             Movie movie = movieLib.get(movieName);
             if(filmBean.isExist(movieName, movie.getYear())) continue;

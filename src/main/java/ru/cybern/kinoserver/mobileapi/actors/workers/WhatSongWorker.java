@@ -14,7 +14,7 @@ public class WhatsongWorker extends UntypedActor {
 
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
-    private Parser parser = new Parser();
+    private Parser parser = new Parser(false);
 
 
     @Override
