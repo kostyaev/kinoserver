@@ -10,6 +10,7 @@ import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
 import ru.cybern.kinoserver.mobileapi.actors.workers.WhatsongWorker;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
 import ru.cybern.kinoserver.parsers.models.Movie;
+import ru.cybern.kinoserver.parsers.whatsong.Parser;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -27,32 +28,32 @@ public class WhatsongManager extends UntypedActor {
 
     private int workersCount;
 
-    public static Props props(final IParserBean parserBean, final int pageCount) {
+    public static Props props(final IParserBean parserBean, final int threadCount) {
         return Props.create(new Creator<WhatsongManager>() {
             private static final long serialVersionUID = 1L;
 
             @Override
             public WhatsongManager create() throws Exception {
-                return new WhatsongManager(parserBean, pageCount);
+                return new WhatsongManager(parserBean, threadCount);
             }
         });
     }
 
-    public WhatsongManager(IParserBean parserBean, int pageCount) {
+    public WhatsongManager(IParserBean parserBean, int threadCount) {
         this.parserBean = parserBean;
-        this.pageCount = pageCount;
-        this.workersCount = pageCount;
+        this.pageCount = Parser.getLastPageNumber();
+        this.workersCount = threadCount;
     }
 
     @Override
     public void preStart() {
         freePages = new LinkedList<>();
-        for(int i = 1; i <= pageCount; i++)
+        for(int i = 0; i <= pageCount; i++)
             freePages.add(new Page(i));
         for(int i = 0; i < workersCount; i++) {
             Page page = getFreePage();
             log.info("Starting worker for page: " + page);
-            ActorRef worker = getContext().actorOf(Props.create(WhatsongWorker.class), "kinopoisk" + i);
+            ActorRef worker = getContext().actorOf(Props.create(WhatsongWorker.class), "whatsong" + i);
             worker.tell(page, getSelf());
         }
     }
