@@ -55,7 +55,7 @@ public class Parser {
         movieLibrary = new HashMap<String, Movie>();
         String startURL;
         Document page;
-        startURL =  BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/page/";
+        startURL =  BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/50/page/";
         for (int i = from; i <= to; i++) //14
         {
             String url = startURL + i;
@@ -68,17 +68,19 @@ public class Parser {
                 String movName = moviesElems.get(j).text();
                 logger.info("received " + (j+1) + " movies");
                 List<Soundtrack> gotSounds = getSounds(movUrl);
-                String image = getImage(movUrl);
-                if (gotSounds != null && image != null){
-                    Movie curMovie = new Movie(getSounds(movUrl),getImage(movUrl),Integer.parseInt(yearElems.get(j).text()));
-                    movieLibrary.put(movName, curMovie);
+                if (gotSounds != null){
+                    String image = getImage(movUrl);
+                    if (image != null) {
+                        Movie curMovie = new Movie(getSounds(movUrl), image, Integer.parseInt(yearElems.get(j).text()));
+                        movieLibrary.put(movName, curMovie);
+                    }
                 }
             }
         }
         return movieLibrary;
     }
 
-    private String extractNumber(String str) {
+    private static String extractNumber(String str) {
         Pattern pattern = Pattern.compile("^.*/(\\d+)/");
         Matcher matcher = pattern.matcher(str);
         if (matcher.find())
@@ -88,10 +90,9 @@ public class Parser {
         return null;
     }
 
-    public int getLastPageNumber() throws IOException {
-        String url = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/200/";
+    public static int getLastPageNumber() throws IOException {
+        String url = BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/50/";
         Document page = connect(url);
-        Elements elem = page.select("li.arr");
         String lastPageURL = page.select("li.arr").get(1).select("a").attr("href");
         int pageCnt = Integer.parseInt(extractNumber(lastPageURL));
         return pageCnt;

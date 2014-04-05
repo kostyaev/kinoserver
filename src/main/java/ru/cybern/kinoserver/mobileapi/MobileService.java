@@ -19,6 +19,7 @@ import ru.cybern.kinoserver.mobileapi.dto.Performer;
 import ru.cybern.kinoserver.mobileapi.dto.Update;
 import ru.cybern.kinoserver.mobileapi.dto.Update.Method;
 import ru.cybern.kinoserver.mobileapi.dto.UpdateResponse;
+import ru.cybern.kinoserver.parsers.Global;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -31,6 +32,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +60,9 @@ public class MobileService {
 
     @Inject
     IParserBean parserBean;
+
+    @Inject
+    ParserManager manager;
 
     public static final String INIT_DATE = "2014-01-01";
 
@@ -102,14 +108,7 @@ public class MobileService {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setPerformer(getPerformerFrom(entity.getPerformer()));
-        dto.setRating(0.0); //FIXME
-        list.add(dto);
-    }
-
-    private void addPerformer(PerformerEntity entity, List<Performer> list){
-        Performer dto = new Performer();
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
+        dto.setRating(0.0);
         list.add(dto);
     }
 
@@ -189,15 +188,27 @@ public class MobileService {
         return getUpdates(INIT_DATE);
     }
 
-    @Inject
-    ParserManager manager;
-
+    @GET
+    @Path("image/{name}")
+    @Produces("image/jpeg")
+    public Response getImage(@PathParam("name") String filename) {
+        File file = new File(Global.HOME_PATH + Global.IMG_PATH + filename);
+        Response.ResponseBuilder response = Response.ok((Object) file);
+        response.header("Content-Disposition",
+                "attachment; filename=" + filename);
+        return response.build();
+    }
 
     @GET
-    @Path("start")
-    public void start() {
+    @Path("start/kinopoisk")
+    public void startKinopoisk() {
         manager.startKinopoisk();
-        //manager.startWhatsong();
+    }
+
+    @GET
+    @Path("start/whatsong")
+    public void startWhatsong() {
+        manager.startWhatsong();
     }
 
 }

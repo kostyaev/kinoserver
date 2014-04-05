@@ -19,19 +19,17 @@ public class ParserManager {
     @Inject
     private IParserBean parserBean;
 
-    private int kinopoiskPageCount = 2;
-
-    private int whatsongPageCount = 20;
+    private final static int NUM_OF_THREADS = 10;
 
     public void startKinopoisk() {
         ActorSystem system = ActorSystem.create("parsers");
-        ActorRef a = system.actorOf(KinopoiskManager.props(parserBean, kinopoiskPageCount), "kinopoiskManager");
+        ActorRef a = system.actorOf(KinopoiskManager.props(parserBean, NUM_OF_THREADS), "kinopoiskManager");
         //system.actorOf(Props.create(Terminator.class, a), "terminator");
     }
 
     public void startWhatsong() {
         ActorSystem system = ActorSystem.create("parsers");
-        ActorRef a = system.actorOf(WhatsongManager.props(parserBean, whatsongPageCount), "whatsongManager");
+        ActorRef a = system.actorOf(WhatsongManager.props(parserBean, NUM_OF_THREADS), "whatsongManager");
         //system.actorOf(Props.create(Terminator.class, a), "terminator");
     }
 

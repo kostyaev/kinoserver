@@ -11,6 +11,7 @@ import ru.cybern.kinoserver.mobileapi.actors.workers.KinopoiskWorker;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
 import ru.cybern.kinoserver.parsers.models.Movie;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -27,21 +28,22 @@ public class KinopoiskManager extends UntypedActor {
 
     private int workersCount;
 
-    public static Props props(final IParserBean parserBean, final int pageCount) {
+    public static Props props(final IParserBean parserBean, final int threadCount) {
         return Props.create(new Creator<KinopoiskManager>() {
             private static final long serialVersionUID = 1L;
 
             @Override
             public KinopoiskManager create() throws Exception {
-                return new KinopoiskManager(parserBean, pageCount);
+                return new KinopoiskManager(parserBean, threadCount);
             }
         });
     }
 
-    public KinopoiskManager(IParserBean parserBean, int pageCount) {
+    public KinopoiskManager(IParserBean parserBean, int threadCount) throws IOException {
         this.parserBean = parserBean;
-        this.pageCount = pageCount;
-        this.workersCount = pageCount;
+        this.pageCount = 2;
+        //this.pageCount = Parser.getLastPageNumber();
+        this.workersCount = threadCount;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class KinopoiskManager extends UntypedActor {
         freePages = new LinkedList<>();
         for(int i = 1; i <= pageCount; i++)
             freePages.add(new Page(i));
-        for(int i = 0; i < workersCount; i++) {
+        for(int i = 0; i < workersCount && i < pageCount; i++) {
             Page page = getFreePage();
             log.info("Starting worker for page: " + page);
             ActorRef worker = getContext().actorOf(Props.create(KinopoiskWorker.class), "kinopoisk" + i);

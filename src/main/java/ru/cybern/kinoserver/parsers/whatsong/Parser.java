@@ -45,7 +45,7 @@ public class Parser {
         this.saveImages = saveImages;
     }
 
-    private Document connect(String addr) throws IOException {
+    private static Document connect(String addr) throws IOException {
         Document doc = Jsoup.connect(addr)
                 .timeout(10000)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
@@ -54,7 +54,7 @@ public class Parser {
         return doc;
     }
 
-    private String extractYear(String str) {
+    private static String extractYear(String str) {
         Pattern pattern = Pattern.compile("\\[(.*?)\\]");
         Matcher matcher = pattern.matcher(str);
         if (matcher.find())
@@ -64,7 +64,7 @@ public class Parser {
         return null;
     }
 
-    private String extractName(String str) {
+    private static String extractName(String str) {
         Pattern pattern = Pattern.compile("(^.+) \\[.+");
         Matcher matcher = pattern.matcher(str);
         if (matcher.find())
@@ -95,13 +95,14 @@ public class Parser {
                 String name = pagemoviesElems.get(j).text();
                 int year = Integer.parseInt(extractYear(name));
                 String movName = extractName(name);
-                logger.info("Movie name: " + movName);
-                logger.info("YEAR: " + year);
+                logger.info("received " + (j+1) + " movies");
                 List<Soundtrack> sounds = getSounds(movUrl);
-                String image = getImage(movUrl);
-                if (sounds != null && image != null){
-                    Movie curMovie = new Movie(sounds, image, year);
-                    movieLibrary.put(movName, curMovie);
+                if (sounds != null){
+                    String image = getImage(movUrl);
+                    if (image != null) {
+                        Movie curMovie = new Movie(sounds, image, year);
+                        movieLibrary.put(movName, curMovie);
+                    }
                 }
             }
         }
@@ -148,7 +149,7 @@ public class Parser {
         os.close();
     }
 
-    public int getLastPageNumber() {
+    public static int getLastPageNumber() {
         return LAST_PAGE_NUMBER;
     }
 
