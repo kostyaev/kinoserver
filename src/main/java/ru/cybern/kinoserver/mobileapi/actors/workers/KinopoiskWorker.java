@@ -4,6 +4,7 @@ import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
+import ru.cybern.kinoserver.parsers.Global;
 import ru.cybern.kinoserver.parsers.kinopoisk.Parser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 
@@ -25,6 +26,7 @@ public class KinopoiskWorker extends UntypedActor {
     @Override
     public void onReceive(Object message) throws Exception {
         if(message instanceof Page) {
+            log.info("Path is: " + Global.HOME_PATH + Global.IMG_PATH);
             int page = ((Page) message).getPageNum();
             HashMap<String,Movie> lib = parser.parse(page, page);
             log.info("Page is done");

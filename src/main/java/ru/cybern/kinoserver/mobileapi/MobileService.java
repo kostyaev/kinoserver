@@ -29,6 +29,7 @@ import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -150,8 +151,7 @@ public class MobileService {
         return update;
     }
 
-
-    @GET
+    @POST
     @Path("update/{date}")
     public UpdateResponse getUpdates(@PathParam("date") String date) {
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -182,9 +182,15 @@ public class MobileService {
         return updates;
     }
 
-    @GET
+    @POST
     @Path("update")
     public UpdateResponse getAllUpdates() {
+        return getUpdates(INIT_DATE);
+    }
+
+    @GET
+    @Path("update")
+    public UpdateResponse getUpdates() {
         return getUpdates(INIT_DATE);
     }
 
