@@ -11,7 +11,6 @@ import ru.cybern.kinoserver.mobileapi.db.entities.FilmHistoryEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.FilmMusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
-import ru.cybern.kinoserver.mobileapi.dto.Favorites;
 import ru.cybern.kinoserver.mobileapi.dto.Film;
 import ru.cybern.kinoserver.mobileapi.dto.FilmMusic;
 import ru.cybern.kinoserver.mobileapi.dto.Music;
@@ -19,6 +18,7 @@ import ru.cybern.kinoserver.mobileapi.dto.Performer;
 import ru.cybern.kinoserver.mobileapi.dto.Update;
 import ru.cybern.kinoserver.mobileapi.dto.Update.Method;
 import ru.cybern.kinoserver.mobileapi.dto.UpdateResponse;
+import ru.cybern.kinoserver.mobileapi.dto.UserData;
 import ru.cybern.kinoserver.parsers.Global;
 
 import javax.ejb.Stateless;
@@ -124,7 +124,6 @@ public class MobileService {
     }
 
     private Update getUpdates(List<FilmHistoryEntity> filmHistories ) {
-        List<Favorites> favorites = new LinkedList<>();
         List<Film> films = new LinkedList<>();
         List<Music> music = new LinkedList<>();
         List<FilmMusic> filmMusic = new LinkedList<>();
@@ -143,7 +142,6 @@ public class MobileService {
         }
 
         Update update = new Update();
-        update.setFavorites(favorites);
         update.setFilmMusic(filmMusic);
         update.setUpdateDate(new Date());
         update.setMethod(Update.Method.ADD);
@@ -151,7 +149,7 @@ public class MobileService {
         return update;
     }
 
-    @POST
+    @GET
     @Path("update/{date}")
     public UpdateResponse getUpdates(@PathParam("date") String date) {
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -182,15 +180,9 @@ public class MobileService {
         return updates;
     }
 
-    @POST
-    @Path("update")
-    public UpdateResponse getAllUpdates() {
-        return getUpdates(INIT_DATE);
-    }
-
     @GET
     @Path("update")
-    public UpdateResponse getUpdates() {
+    public UpdateResponse getAllUpdates() {
         return getUpdates(INIT_DATE);
     }
 
@@ -215,6 +207,19 @@ public class MobileService {
     @Path("start/whatsong")
     public void startWhatsong() {
         manager.startWhatsong();
+    }
+
+    @GET
+    @Path("user/{id}/{date}")
+    public void getUserData(@PathParam("id") Long userId, @PathParam("date") String date) {
+
+
+    }
+
+    @POST
+    @Path("user/{id}/")
+    public void setUserData(@PathParam("id") Long userId, UserData userData) {
+        //@TODO
     }
 
 }

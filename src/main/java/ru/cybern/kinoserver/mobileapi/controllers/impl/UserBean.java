@@ -2,6 +2,8 @@ package ru.cybern.kinoserver.mobileapi.controllers.impl;
 
 import ru.cybern.kinoserver.mobileapi.controllers.IUserBean;
 import ru.cybern.kinoserver.mobileapi.db.IUserDAO;
+import ru.cybern.kinoserver.mobileapi.db.entities.FavoritesEntity;
+import ru.cybern.kinoserver.mobileapi.db.entities.MusicRatingEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.UserEntity;
 
 import javax.ejb.Stateless;
@@ -51,5 +53,17 @@ public class UserBean implements IUserBean {
     @Override
     public List<UserEntity> getUsers() {
         return userDAO.findAll();
+    }
+
+    @Override
+    public List<FavoritesEntity> getFavoritesByUser(UserEntity user) {
+        //@TODO
+        return null;
+    }
+
+    @Override
+    public List<MusicRatingEntity> getRatingsByUser(UserEntity user) {
+        //@TODO
+        return null;
     }
 }

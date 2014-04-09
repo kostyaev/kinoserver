@@ -1,5 +1,7 @@
 package ru.cybern.kinoserver.mobileapi.controllers;
 
+import ru.cybern.kinoserver.mobileapi.db.entities.FavoritesEntity;
+import ru.cybern.kinoserver.mobileapi.db.entities.MusicRatingEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.UserEntity;
 
 import java.util.List;
@@ -16,4 +18,8 @@ public interface IUserBean {
     boolean deleteUser(int id);
 
     List<UserEntity> getUsers();
+
+    List<FavoritesEntity> getFavoritesByUser(UserEntity user);
+
+    List<MusicRatingEntity> getRatingsByUser(UserEntity user);
 }
