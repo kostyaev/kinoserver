@@ -5,10 +5,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-/*import ru.cybern.kinoserver.parsers.Global;
+import ru.cybern.kinoserver.parsers.models.Movie;
+import ru.cybern.kinoserver.parsers.Global;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
-*/
+
 import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class Parser {
 
     private boolean saveImages;
 
- //   private HashMap<String,Movie> movieLibrary;
+   private  HashMap<String,Movie> movieLibrary;
 
     public Parser(boolean saveImages) {
         this.saveImages = saveImages;
@@ -78,13 +79,13 @@ public class Parser {
         }
         return null;
     }
-/*
+
     public HashMap<String, Movie> parse(int start,  int end) throws IOException {
         movieLibrary = new HashMap<String, Movie>();
-        String startURL = "http://www.soundtrack.net/albums/";
+        String startURL = "http://www.soundtrack.net/albums/?lid=t";
         Document page = connect(startURL);
         Elements pagemoviesElems;
-        Elements pageElems = page.select("alphanav");
+        Elements pageElems = page.select("alphanav").select("a");
 
 
         if(start < 0)
@@ -96,20 +97,30 @@ public class Parser {
             String url = BASE_ADDRESS + pageElems.get(i).attr("href");
             page = connect(url);
             pagemoviesElems = page.select(".nav-pills").select(".nav-stacked").select("a");
-            for (int j=0; j<pagemoviesElems.size(); j++){
-                String movUrl = BASE_ADDRESS + pagemoviesElems.get(j).attr("href");
-                String name = pagemoviesElems.get(j).text();
-                int year = Integer.parseInt(extractYear(name));
-                String movName = extractName(name);
-                logger.info("received " + (j+1) + " movies");
-                List<Soundtrack> sounds = getSounds(movUrl);
-                if (sounds != null){
-                    String image = getImage(movUrl);
-                    if (image != null) {
-                        Movie curMovie = new Movie(sounds, image, year);
-                        movieLibrary.put(movName, curMovie);
+
+            for ( Element movie : pagemoviesElems ){
+                String name = movie.text();
+                if ( movie.select(".date").text().isEmpty() == false )
+                {
+                    int year = Integer.parseInt(movie.select(".date").text().substring(1, 5));
+                    String movName = extractName(name).replace("*", "");
+                    System.out.println(movName + " - " + year);
+                    logger.info("received " + pagemoviesElems.indexOf(movie) + " movies");
+                    String trashmovUrl = pagemoviesElems.select("a[href]").toString();
+                    String movUrl = BASE_ADDRESS +
+                            trashmovUrl.substring(trashmovUrl.indexOf("/"), trashmovUrl.indexOf(">") - 2);
+                    System.out.println(movUrl);
+                    List<Soundtrack> sounds = getSounds(movUrl);
+                    if (sounds != null){
+                        String image = getImage(movUrl);
+                        if (image != null) {
+                            Movie curMovie = new Movie(sounds, image, year);
+                            movieLibrary.put(movName, curMovie);
+                        }
                     }
                 }
+                else
+                    logger.info("year of " + extractName(name).replace("*", "")  +  "was not found");
             }
         }
         return movieLibrary;
@@ -118,10 +129,15 @@ public class Parser {
     private  List<Soundtrack> getSounds(String url) throws IOException {
         List<Soundtrack> sounds = new LinkedList<Soundtrack>();
         Document page = connect(url);
-        Elements soundBlocks = page.select("td.span4").select("h4");
+        Elements soundBlocks = page.select("tbody").select(".trackname");
         for (Element sound : soundBlocks)  {
-            String name = sound.text().replace("&amp;", "");
-            String author = sound.parent().parent().select("a[href]").text().replace("&amp;", "");
+            String author="Unknown";
+            String name = sound.text();
+            System.out.println(name);
+            if (name.indexOf("(") != -1 ){
+                author = extractYear(name);
+                name = extractName(name);
+            }
             Soundtrack track = new Soundtrack(name,author);
             sounds.add(track);
         }
@@ -130,11 +146,11 @@ public class Parser {
 
     private String getImage(String url) throws IOException {
         Document page = connect(url);
-        Elements img = page.select("div.span2").select("img");
+        Elements img = page.select("albumart").select("img");
         if (img.isEmpty()) return null;
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
-        String filename = Global.WHATSONG_PREFIX + URLTokens[URLTokens.length - 2];
+        String filename = Global.SOUNDTRACKNET_PREFIX + URLTokens[URLTokens.length -1 ];
         if (saveImages)
             saveImage(BASE_ADDRESS + imgURL, filename + ".jpg");
         return filename;
@@ -158,37 +174,7 @@ public class Parser {
     public static int getLastPageNumber() {
         return LAST_PAGE_NUMBER;
     }
-*/
-        public static void main(String [ ] args) throws IOException {
-        System.out.println("+++");
-        String startURL = "http://www.soundtrack.net/albums/?lid=t";
-        Document page = connect(startURL);
-        Elements pagemoviesElems;
-        Elements pageElems = page.select(".alphanav ").select("a");
-       //     System.out.println("+++" + pageElems);
-        //    for (int i = 0; i <= 1; i++){
-                String url = BASE_ADDRESS + pageElems;
-                System.out.println("+++" + url);//}
-           /*     page = connect(url);
-                pagemoviesElems = page.select(".nav-pills").select(".nav-stacked").select("a");
-                for (int j=0; j<pagemoviesElems.size(); j++){
-                    String movUrl = BASE_ADDRESS + pagemoviesElems.get(j).attr("href");
-                    String name = pagemoviesElems.get(j).text();
-                    int year = Integer.parseInt(extractYear(name));
-                    String movName = extractName(name);
-                    logger.info("received " + (j+1) + " movies");
-                    List<Soundtrack> sounds = getSounds(movUrl);
-                    if (sounds != null){
-                        String image = getImage(movUrl);
-                        if (image != null) {
-                            Movie curMovie = new Movie(sounds, image, year);
-                            movieLibrary.put(movName, curMovie);
-                        }
-                    }
-                }
-            }*/
 
 
-    }
 
 }
