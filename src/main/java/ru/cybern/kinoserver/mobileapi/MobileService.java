@@ -73,7 +73,6 @@ public class MobileService {
 
     public static final String INIT_DATE = "2014-01-01";
 
-
     public Performer getPerformerFrom(PerformerEntity performerEntity) {
         Performer performer = new Performer();
         performer.setId(performerEntity.getId());
@@ -255,17 +254,6 @@ public class MobileService {
         manager.startWhatsong();
     }
 
-    @GET
-    @Path("user/{id}")
-    public UserData getUserData(@PathParam("id") int userId) {
-        UserData userData = new UserData();
-        List<Favorites> favorites= getFavoritesFrom(userBean.getFavoritesByUser(userId));
-        List<MusicRating> musicRatings = getMusicRatingFrom(userBean.getRatingsByUser(userId));
-        userData.setFavorites(favorites);
-        userData.setMusicRating(musicRatings);
-        return userData;
-    }
-
     private void saveFavorites(List<Favorites> favorites, Date updateDate) {
         for(Favorites dto : favorites) {
             FavoritesEntity entity = new FavoritesEntity();
@@ -287,6 +275,17 @@ public class MobileService {
             entity.setValue(dto.getValue());
             userBean.saveMusicRating(entity);
         }
+    }
+
+    @GET
+    @Path("user/{id}")
+    public UserData getUserData(@PathParam("id") int userId) {
+        UserData userData = new UserData();
+        List<Favorites> favorites= getFavoritesFrom(userBean.getFavoritesByUser(userId));
+        List<MusicRating> musicRatings = getMusicRatingFrom(userBean.getRatingsByUser(userId));
+        userData.setFavorites(favorites);
+        userData.setMusicRating(musicRatings);
+        return userData;
     }
 
     @POST

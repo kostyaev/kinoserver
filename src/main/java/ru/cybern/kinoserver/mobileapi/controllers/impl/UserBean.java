@@ -62,12 +62,12 @@ public class UserBean implements IUserBean {
 
     @Override
     public List<FavoritesEntity> getFavoritesByUser(int userId) {
-        return favoritesDAO.getFavoritesByUser(getUser(userId));
+        return favoritesDAO.getFavoritesByUser(userId);
     }
 
     @Override
     public List<MusicRatingEntity> getRatingsByUser(int userId) {
-        return  musicRatingDAO.getMusicRatingsByUser(getUser(userId));
+        return  musicRatingDAO.getMusicRatingsByUser(userId);
     }
 
     @Override
