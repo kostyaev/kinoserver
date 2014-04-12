@@ -1,14 +1,18 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class MusicRating {
 
     private Integer id;
+
     private Music music;
+
     private User user;
+
     private Integer value;
-    private Timestamp dateTime;
+
+    private Date dateTime;
 
     public Integer getId() {
         return id;
@@ -42,11 +46,11 @@ public class MusicRating {
         this.value = value;
     }
 
-    public Timestamp getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(Timestamp dateTime) {
+    public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
 }

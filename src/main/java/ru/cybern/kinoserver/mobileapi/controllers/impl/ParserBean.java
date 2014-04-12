@@ -49,6 +49,7 @@ public class ParserBean implements IParserBean {
 
     @Override
     public void update(HashMap<String,Movie> movieLib) {
+        Date updateDate = new Date();
         for(String movieName : movieLib.keySet()) {
             Movie movie = movieLib.get(movieName);
             if(filmBean.isExist(movieName, movie.getYear())) continue;
@@ -64,7 +65,7 @@ public class ParserBean implements IParserBean {
                 addMusic(movie.getSounds(), addedFilm);
 
             FilmHistoryEntity filmHistoryEntity = new FilmHistoryEntity();
-            filmHistoryEntity.setDateTime(new Date());
+            filmHistoryEntity.setDateTime(updateDate);
             filmHistoryEntity.setFilm(filmEntity);
             filmHistoryEntity.setMethod(Update.Method.ADD.name());
 

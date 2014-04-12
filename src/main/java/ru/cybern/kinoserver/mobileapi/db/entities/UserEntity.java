@@ -8,7 +8,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user", schema = "public", catalog = "kinoserver")
 public class UserEntity {
+
     private Integer id;
+
     private String name;
 
     @Id

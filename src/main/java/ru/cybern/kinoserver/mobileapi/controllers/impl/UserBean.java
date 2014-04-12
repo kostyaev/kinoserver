@@ -1,6 +1,8 @@
 package ru.cybern.kinoserver.mobileapi.controllers.impl;
 
 import ru.cybern.kinoserver.mobileapi.controllers.IUserBean;
+import ru.cybern.kinoserver.mobileapi.db.IFavoritesDAO;
+import ru.cybern.kinoserver.mobileapi.db.IMusicRatingDAO;
 import ru.cybern.kinoserver.mobileapi.db.IUserDAO;
 import ru.cybern.kinoserver.mobileapi.db.entities.FavoritesEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicRatingEntity;
@@ -12,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 
 @Stateless
@@ -22,6 +25,11 @@ public class UserBean implements IUserBean {
     @Inject
     private IUserDAO userDAO;
 
+    @Inject
+    private IFavoritesDAO favoritesDAO;
+
+    @Inject
+    private IMusicRatingDAO musicRatingDAO;
 
     @Override
     public UserEntity saveUser(UserEntity user) {
@@ -31,8 +39,6 @@ public class UserBean implements IUserBean {
     @Override
     public void deleteUser(UserEntity user) {
         userDAO.delete(user);
-
-
     }
 
     @Override
@@ -56,14 +62,24 @@ public class UserBean implements IUserBean {
     }
 
     @Override
-    public List<FavoritesEntity> getFavoritesByUser(UserEntity user) {
-        //@TODO
-        return null;
+    public List<FavoritesEntity> getFavoritesByUser(Date date, int userId) {
+        return favoritesDAO.getAfterDateByUser(date, getUser(userId));
     }
 
     @Override
-    public List<MusicRatingEntity> getRatingsByUser(UserEntity user) {
-        //@TODO
-        return null;
+    public List<MusicRatingEntity> getRatingsByUser(Date date, int userId) {
+        return  musicRatingDAO.getAfterDateByUser(date, getUser(userId));
     }
+
+    @Override
+    public FavoritesEntity saveFavorites(FavoritesEntity favorites) {
+        return favoritesDAO.save(favorites);
+    }
+
+
+    @Override
+    public MusicRatingEntity saveMusicRating(MusicRatingEntity musicRating) {
+        return musicRatingDAO.save(musicRating);
+    }
+
 }

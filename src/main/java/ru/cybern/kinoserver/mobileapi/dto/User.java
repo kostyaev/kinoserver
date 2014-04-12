@@ -1,7 +1,9 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
 public class User {
+
     private int id;
+
     private String name;
 
     public int getId() {
