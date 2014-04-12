@@ -256,12 +256,11 @@ public class MobileService {
     }
 
     @GET
-    @Path("user/{id}/{date}")
-    public UserData getUserData(@PathParam("id") int userId, @PathParam("date") String date) {
+    @Path("user/{id}")
+    public UserData getUserData(@PathParam("id") int userId) {
         UserData userData = new UserData();
-        Date updateDate = parseDate(date);
-        List<Favorites> favorites= getFavoritesFrom(userBean.getFavoritesByUser(updateDate, userId));
-        List<MusicRating> musicRatings = getMusicRatingFrom(userBean.getRatingsByUser(updateDate, userId));
+        List<Favorites> favorites= getFavoritesFrom(userBean.getFavoritesByUser(userId));
+        List<MusicRating> musicRatings = getMusicRatingFrom(userBean.getRatingsByUser(userId));
         userData.setFavorites(favorites);
         userData.setMusicRating(musicRatings);
         return userData;
@@ -291,7 +290,7 @@ public class MobileService {
     }
 
     @POST
-    @Path("user/{id}/")
+    @Path("user/{id}")
     public Date setUserData(@PathParam("id") Long userId, UserData userData) {
         Date updateDate = new Date();
         saveFavorites(userData.getFavorites(), updateDate);
