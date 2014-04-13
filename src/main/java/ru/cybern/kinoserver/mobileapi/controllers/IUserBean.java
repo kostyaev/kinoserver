@@ -4,6 +4,7 @@ import ru.cybern.kinoserver.mobileapi.db.entities.FavoritesEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicRatingEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.UserEntity;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -19,11 +20,11 @@ public interface IUserBean {
 
     List<UserEntity> getUsers();
 
-    List<FavoritesEntity> getFavoritesByUser(int userId);
+    List<FavoritesEntity> getFavoritesByUser(int userId, Date date);
 
     FavoritesEntity saveFavorites(FavoritesEntity favorites);
 
-    List<MusicRatingEntity> getRatingsByUser(int userId);
+    List<MusicRatingEntity> getRatingsByUser(int userId, Date date);
 
     MusicRatingEntity saveMusicRating(MusicRatingEntity musicRating);
 }

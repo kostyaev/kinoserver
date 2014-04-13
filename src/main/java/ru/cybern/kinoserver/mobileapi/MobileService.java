@@ -71,7 +71,7 @@ public class MobileService {
     @Inject
     ParserManager manager;
 
-    public static final String INIT_DATE = "2014-01-01";
+    public static final Long INIT_DATE = 671534305000L;
 
     public Performer getPerformerFrom(PerformerEntity performerEntity) {
         Performer performer = new Performer();
@@ -204,8 +204,8 @@ public class MobileService {
 
     @GET
     @Path("update/{date}")
-    public UpdateResponse getUpdates(@PathParam("date") String date) {
-        Date lastUpdate = parseDate(date);
+    public UpdateResponse getUpdates(@PathParam("date") Long date) {
+        Date lastUpdate = new Date(date);
         List<FilmHistoryEntity> addHistories = filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.ADD);
         Update additions = getUpdates(addHistories);
         List<FilmHistoryEntity> deleteHistories = filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.DELETE);
@@ -278,13 +278,16 @@ public class MobileService {
     }
 
     @GET
-    @Path("user/{id}")
-    public UserData getUserData(@PathParam("id") int userId) {
+    @Path("user/{id}/{date}")
+    public UserData getUserData(@PathParam("id") int userId, @PathParam("date") Long date) {
         UserData userData = new UserData();
-        List<Favorites> favorites= getFavoritesFrom(userBean.getFavoritesByUser(userId));
-        List<MusicRating> musicRatings = getMusicRatingFrom(userBean.getRatingsByUser(userId));
+        Date updateDate = new Date(date);
+        List<Favorites> favorites= getFavoritesFrom(userBean.getFavoritesByUser(userId, updateDate));
+        List<MusicRating> musicRatings = getMusicRatingFrom(userBean.getRatingsByUser(userId, updateDate));
         userData.setFavorites(favorites);
         userData.setMusicRating(musicRatings);
+        if (!favorites.isEmpty())
+            System.out.println(favorites.get(0).getDateTime().getTime());
         return userData;
     }
 

@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 
 @Stateless
@@ -61,13 +62,13 @@ public class UserBean implements IUserBean {
     }
 
     @Override
-    public List<FavoritesEntity> getFavoritesByUser(int userId) {
-        return favoritesDAO.getFavoritesByUser(userId);
+    public List<FavoritesEntity> getFavoritesByUser(int userId, Date date) {
+        return favoritesDAO.getFavoritesByUser(userId, date);
     }
 
     @Override
-    public List<MusicRatingEntity> getRatingsByUser(int userId) {
-        return  musicRatingDAO.getMusicRatingsByUser(userId);
+    public List<MusicRatingEntity> getRatingsByUser(int userId, Date date) {
+        return  musicRatingDAO.getMusicRatingsByUser(userId, date);
     }
 
     @Override
