@@ -8,10 +8,8 @@ public class Update {
 
     public static enum Method {ADD, DELETE, UPDATE}
     private Method method;
-    private List<Favorites> favorites;
     private List<FilmMusic> filmMusic;
     private Date updateDate;
-
 
     public Method getMethod() {
         return method;
@@ -19,14 +17,6 @@ public class Update {
 
     public void setMethod(Method method) {
         this.method = method;
-    }
-
-    public List<Favorites> getFavorites() {
-        return favorites;
-    }
-
-    public void setFavorites(List<Favorites> favorites) {
-        this.favorites = favorites;
     }
 
     public List<FilmMusic> getFilmMusic() {
