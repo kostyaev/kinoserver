@@ -20,6 +20,7 @@ import ru.cybern.kinoserver.mobileapi.dto.FilmMusic;
 import ru.cybern.kinoserver.mobileapi.dto.Music;
 import ru.cybern.kinoserver.mobileapi.dto.MusicRating;
 import ru.cybern.kinoserver.mobileapi.dto.Performer;
+import ru.cybern.kinoserver.mobileapi.dto.StatusResponse;
 import ru.cybern.kinoserver.mobileapi.dto.Update;
 import ru.cybern.kinoserver.mobileapi.dto.Update.Method;
 import ru.cybern.kinoserver.mobileapi.dto.UpdateResponse;
@@ -296,6 +297,23 @@ public class MobileService {
         saveFavorites(userData.getFavorites(), updateDate);
         saveMusicRating(userData.getMusicRating(), updateDate);
         return updateDate;
+    }
+
+    @POST
+    @Path("user/register")
+    public StatusResponse register(User user) {
+        StatusResponse response = new StatusResponse();
+        try
+        {
+            UserEntity userEntity = new UserEntity();
+            userEntity.setId(user.getId());
+            userEntity.setName(user.getName());
+            userBean.saveUser(userEntity);
+            response.setResponseStatus(StatusResponse.ResponseStatus.OK);
+        } catch (Exception e) {
+            response.setResponseStatus(StatusResponse.ResponseStatus.FAIL);
+        }
+        return response;
     }
 
 }

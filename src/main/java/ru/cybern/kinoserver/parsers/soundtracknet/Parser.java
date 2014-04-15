@@ -5,12 +5,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.Global;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,9 +21,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by Khasan on 12.04.14.
- */
+
 public class Parser {
 
     private static final String BASE_ADDRESS = "http://www.soundtrack.net";
@@ -31,7 +32,7 @@ public class Parser {
 
     private boolean saveImages;
 
-   private  HashMap<String,Movie> movieLibrary;
+    private  HashMap<String,Movie> movieLibrary;
 
     public Parser(boolean saveImages) {
         this.saveImages = saveImages;
@@ -48,7 +49,8 @@ public class Parser {
     private static Document connect(String addr) throws IOException {
         Document doc = null;
         try
-        {doc = Jsoup.connect(addr)
+        {
+            doc = Jsoup.connect(addr)
                 .timeout(10000)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                 .referrer("http://www.google.com")
@@ -98,7 +100,7 @@ public class Parser {
             page = connect(url);
             pagemoviesElems = page.select(".nav-pills").select(".nav-stacked").select("a");
 
-            for ( Element movie : pagemoviesElems ){
+            for (Element movie : pagemoviesElems ){
                 String name = movie.text();
                 if ( movie.select(".date").text().isEmpty() == false )
                 {
@@ -174,7 +176,5 @@ public class Parser {
     public static int getLastPageNumber() {
         return LAST_PAGE_NUMBER;
     }
-
-
 
 }
