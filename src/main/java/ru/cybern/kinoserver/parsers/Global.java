@@ -12,4 +12,5 @@ public class Global {
 
     public static final String WHATSONG_PREFIX = "ws_";
 
+    public static final String SOUNDTRACKNET_PREFIX = "st_";
 }
