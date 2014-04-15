@@ -286,8 +286,6 @@ public class MobileService {
         List<MusicRating> musicRatings = getMusicRatingFrom(userBean.getRatingsByUser(userId, updateDate));
         userData.setFavorites(favorites);
         userData.setMusicRating(musicRatings);
-        if (!favorites.isEmpty())
-            System.out.println(favorites.get(0).getDateTime().getTime());
         return userData;
     }
 
