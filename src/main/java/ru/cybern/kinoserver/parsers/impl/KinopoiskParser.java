@@ -1,4 +1,4 @@
-package ru.cybern.kinoserver.parsers.kinopoisk;
+package ru.cybern.kinoserver.parsers.impl;
 
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.cybern.kinoserver.parsers.Global;
+import ru.cybern.kinoserver.parsers.IParser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
@@ -21,18 +22,23 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Parser {
+public class KinopoiskParser implements IParser {
 
-    private static final Logger logger = Logger.getLogger(Parser.class);
+    private static final Logger logger = Logger.getLogger(KinopoiskParser.class);
 
     private static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
 
-    private HashMap<String,Movie> movieLibrary;
+
 
     private boolean saveImages;
 
-    public Parser(boolean saveImages) {
+    public KinopoiskParser(boolean saveImages) {
         this.saveImages = saveImages;
+    }
+
+    @Override
+    public String getClassName() {
+        return KinopoiskParser.class.getName();
     }
 
     public boolean isSaveImages() {
@@ -52,7 +58,7 @@ public class Parser {
     }
 
     public HashMap<String,Movie> parse(int from, int to) throws IOException {
-        movieLibrary = new HashMap<String, Movie>();
+        HashMap<String,Movie> movieLibrary = new HashMap<>();
         String startURL;
         Document page;
         startURL =  BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/50/page/";

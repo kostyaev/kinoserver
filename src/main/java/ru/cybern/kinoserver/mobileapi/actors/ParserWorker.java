@@ -1,25 +1,46 @@
-package ru.cybern.kinoserver.mobileapi.actors.workers;
+package ru.cybern.kinoserver.mobileapi.actors;
 
+import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akka.japi.Creator;
 import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
 import ru.cybern.kinoserver.parsers.Global;
-import ru.cybern.kinoserver.parsers.kinopoisk.Parser;
+import ru.cybern.kinoserver.parsers.IParser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 
-public class KinopoiskWorker extends UntypedActor {
+public class ParserWorker extends UntypedActor {
 
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
-    private Parser parser = new Parser(true);
+    private IParser parser;
+
+    private String parserName;
+
+    public static Props props(final IParser parser) {
+        return Props.create(new Creator<ParserWorker>() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public ParserWorker create() throws Exception {
+                return new ParserWorker(parser);
+            }
+        });
+    }
+
+    public ParserWorker(IParser parser) throws IOException {
+        this.parser = parser;
+        this.parserName = parser.getClass().getName();
+    }
 
     @Override
     public void postStop() {
-        log.info("Stopping kinopoisk actor...");
+        log.info("Stopping " + parserName +  " actor...");
     }
 
 

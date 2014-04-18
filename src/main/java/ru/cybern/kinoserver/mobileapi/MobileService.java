@@ -1,7 +1,7 @@
 package ru.cybern.kinoserver.mobileapi;
 
 import org.hibernate.Hibernate;
-import ru.cybern.kinoserver.mobileapi.actors.ParserManager;
+import ru.cybern.kinoserver.mobileapi.actors.ParserRunner;
 import ru.cybern.kinoserver.mobileapi.controllers.IFilmBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IMusicBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
@@ -70,7 +70,7 @@ public class MobileService {
     IParserBean parserBean;
 
     @Inject
-    ParserManager manager;
+    ParserRunner manager;
 
     public static final Long INIT_DATE = 671534305000L;
 

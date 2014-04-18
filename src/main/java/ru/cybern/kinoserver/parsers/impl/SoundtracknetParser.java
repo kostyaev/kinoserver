@@ -1,4 +1,4 @@
-package ru.cybern.kinoserver.parsers.soundtracknet;
+package ru.cybern.kinoserver.parsers.impl;
 
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.cybern.kinoserver.parsers.Global;
+import ru.cybern.kinoserver.parsers.IParser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 import ru.cybern.kinoserver.parsers.models.Soundtrack;
 
@@ -22,20 +23,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class Parser {
+public class SoundtracknetParser implements IParser {
 
     private static final String BASE_ADDRESS = "http://www.soundtrack.net";
 
-    private static final Logger logger = Logger.getLogger(Parser.class);
+    private static final Logger logger = Logger.getLogger(SoundtracknetParser.class);
 
     private static final int LAST_PAGE_NUMBER = 26;
 
     private boolean saveImages;
 
-    private  HashMap<String,Movie> movieLibrary;
-
-    public Parser(boolean saveImages) {
+    public SoundtracknetParser(boolean saveImages) {
         this.saveImages = saveImages;
+    }
+
+    @Override
+    public String getClassName() {
+        return this.getClassName();
     }
 
     public boolean isSaveImages() {
@@ -83,7 +87,7 @@ public class Parser {
     }
 
     public HashMap<String, Movie> parse(int start,  int end) throws IOException {
-        movieLibrary = new HashMap<String, Movie>();
+        HashMap<String,Movie> movieLibrary = new HashMap<>();
         String startURL = "http://www.soundtrack.net/albums/?lid=t";
         Document page = connect(startURL);
         Elements pagemoviesElems;

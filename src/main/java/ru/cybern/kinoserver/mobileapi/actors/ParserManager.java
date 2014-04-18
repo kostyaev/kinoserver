@@ -1,61 +1,89 @@
 package ru.cybern.kinoserver.mobileapi.actors;
 
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Terminated;
+import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import ru.cybern.kinoserver.mobileapi.actors.managers.KinopoiskManager;
-import ru.cybern.kinoserver.mobileapi.actors.managers.WhatsongManager;
+import akka.japi.Creator;
+import ru.cybern.kinoserver.mobileapi.actors.helpers.Page;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
+import ru.cybern.kinoserver.parsers.IParser;
+import ru.cybern.kinoserver.parsers.models.Movie;
 
-import javax.ejb.Singleton;
-import javax.inject.Inject;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
 
-@Singleton
-public class ParserManager {
 
-    @Inject
+public class ParserManager extends UntypedActor {
+
+    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+
     private IParserBean parserBean;
 
-    private final static int NUM_OF_THREADS = 10;
+    private int pageCount;
 
-    public void startKinopoisk() {
-        ActorSystem system = ActorSystem.create("parsers");
-        ActorRef a = system.actorOf(KinopoiskManager.props(parserBean, NUM_OF_THREADS), "kinopoiskManager");
-        //system.actorOf(Props.create(Terminator.class, a), "terminator");
-    }
+    private LinkedList<Page> freePages;
 
-    public void startWhatsong() {
-        ActorSystem system = ActorSystem.create("parsers");
-        ActorRef a = system.actorOf(WhatsongManager.props(parserBean, NUM_OF_THREADS), "whatsongManager");
-        //system.actorOf(Props.create(Terminator.class, a), "terminator");
-    }
+    private int workersCount;
 
-    public void startSTCollect() {}
+    private IParser parser;
 
-    public static class Terminator extends UntypedActor {
+    public static Props props(final IParserBean parserBean, final IParser parser,
+                              final int threadCount, final int pageCount) {
+        return Props.create(new Creator<ParserManager>() {
+            private static final long serialVersionUID = 1L;
 
-        private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
-        private final ActorRef ref;
-
-        public Terminator(ActorRef ref) {
-            this.ref = ref;
-            getContext().watch(ref);
-        }
-
-        @Override
-        public void onReceive(Object msg) {
-            if (msg instanceof Terminated) {
-                log.info("{} has terminated, shutting down system", ref.path());
-                getContext().system().shutdown();
-            } else {
-                unhandled(msg);
+            @Override
+            public ParserManager create() throws Exception {
+                return new ParserManager(parserBean, parser, threadCount, pageCount);
             }
-        }
-
+        });
     }
 
+    public ParserManager(IParserBean parserBean, IParser parser,
+                            int threadCount, int pageCount) throws IOException {
+        this.parserBean = parserBean;
+        this.parser = parser;
+        this.pageCount = pageCount;
+        this.workersCount = threadCount;
+    }
 
+    @Override
+    public void preStart() {
+        freePages = new LinkedList<>();
+        for(int i = 1; i <= pageCount; i++)
+            freePages.add(new Page(i));
+        for(int i = 0; i < workersCount && i < pageCount; i++) {
+            Page page = getFreePage();
+            log.info("Starting worker for page: " + page);
+            ActorRef worker = getContext().actorOf(ParserWorker.props(parser), parser.getClassName() + i);
+            worker.tell(page, getSelf());
+        }
+    }
+
+    private Page getFreePage() {
+        Page p = freePages.poll();
+        log.info("Page size is: " + freePages.size());
+        return p;
+    }
+
+    @Override
+    public void onReceive(Object message) throws Exception {
+       if(message instanceof HashMap) {
+            log.info("Received data from Worker: " + sender().toString());
+            if(!freePages.isEmpty()) {
+                sender().tell(getFreePage(), getSelf());
+            } else {
+                workersCount--;
+            }
+            log.info("Gathered Movies: " + ((HashMap) message).size());
+            parserBean.update((HashMap<String,Movie>) message);
+        }
+        else
+            unhandled(message);
+        if(workersCount <= 0 )
+            getContext().stop(getSelf());
+    }
 }
