@@ -91,7 +91,7 @@ public class SoundtracknetParser implements IParser {
         String startURL = "http://www.soundtrack.net/albums/?lid=t";
         Document page = connect(startURL);
         Elements pagemoviesElems;
-        Elements pageElems = page.select("alphanav").select("a");
+        Elements pageElems = page.select(".alphanav").select("a");
 
 
         if(start < 0)
@@ -100,33 +100,37 @@ public class SoundtracknetParser implements IParser {
             end = LAST_PAGE_NUMBER;
 
         for (int i = start; i <= end; i++){
-            String url = BASE_ADDRESS + pageElems.get(i).attr("href");
+            String url = BASE_ADDRESS + "/albums/"+ pageElems.get(i).attr("href");
             page = connect(url);
-            pagemoviesElems = page.select(".nav-pills").select(".nav-stacked").select("a");
+            pagemoviesElems = page.select(".soundtracks-right-table").select("ul").select("li");
 
             for (Element movie : pagemoviesElems ){
                 String name = movie.text();
-                if ( movie.select(".date").text().isEmpty() == false )
+                if ( (movie.select(".date").text().isEmpty() == false)
+                        && (movie.select(".date").text().toString().contains("(0)") == false)
+                        && (movie.select(".date").text().toString().length() >= 6)
+                        && (movie.select(".date").text().toString().contains("(0,") == false))
                 {
-                    int year = Integer.parseInt(movie.select(".date").text().substring(1, 5));
-                    String movName = extractName(name).replace("*", "");
-                    System.out.println(movName + " - " + year);
-                    logger.info("received " + pagemoviesElems.indexOf(movie) + " movies");
-                    String trashmovUrl = pagemoviesElems.select("a[href]").toString();
-                    String movUrl = BASE_ADDRESS +
+                        int year = Integer.parseInt(movie.select(".date").text().substring(1, 5));
+                        String movName = extractName(name).replace("*", "");
+                        logger.info("received " + pagemoviesElems.indexOf(movie) + " movies");
+                        String trashmovUrl = pagemoviesElems.select("a[href]").toString();
+                        String movUrl = BASE_ADDRESS +
                             trashmovUrl.substring(trashmovUrl.indexOf("/"), trashmovUrl.indexOf(">") - 2);
-                    System.out.println(movUrl);
-                    List<Soundtrack> sounds = getSounds(movUrl);
-                    if (sounds != null){
-                        String image = getImage(movUrl);
-                        if (image != null) {
-                            Movie curMovie = new Movie(sounds, image, year);
-                            movieLibrary.put(movName, curMovie);
+                        List<Soundtrack> sounds = getSounds(movUrl);
+                        if (sounds != null){
+                            String image = getImage(movUrl);
+                            if (image != null) {
+                                Movie curMovie = new Movie(sounds, image, year);
+                                movieLibrary.put(movName, curMovie);
+                            }
                         }
-                    }
+
                 }
-                else
-                    logger.info("year of " + extractName(name).replace("*", "")  +  "was not found");
+                else{
+ //                   logger.info("year of " + extractName(name).replace("*", "")  +  "was not found");
+                }
+
             }
         }
         return movieLibrary;
@@ -180,5 +184,7 @@ public class SoundtracknetParser implements IParser {
     public static int getLastPageNumber() {
         return LAST_PAGE_NUMBER;
     }
+
+
 
 }
