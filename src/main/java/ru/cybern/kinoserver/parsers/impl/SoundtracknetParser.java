@@ -55,10 +55,10 @@ public class SoundtracknetParser implements IParser {
         try
         {
             doc = Jsoup.connect(addr)
-                .timeout(10000)
-                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                .referrer("http://www.google.com")
-                .get();
+                    .timeout(10000)
+                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .referrer("http://www.google.com")
+                    .get();
         }
         catch( Exception e ){
             return connect(addr);
@@ -93,7 +93,6 @@ public class SoundtracknetParser implements IParser {
         Elements pagemoviesElems;
         Elements pageElems = page.select(".alphanav").select("a");
 
-
         if(start < 0)
             start = 0;
         if(end > LAST_PAGE_NUMBER)
@@ -102,35 +101,34 @@ public class SoundtracknetParser implements IParser {
         for (int i = start; i <= end; i++){
             String url = BASE_ADDRESS + "/albums/"+ pageElems.get(i).attr("href");
             page = connect(url);
-            pagemoviesElems = page.select(".soundtracks-right-table").select("ul").select("li");
+            pagemoviesElems = page.select(".soundtracks-right-table").select("ul").select("a");
 
             for (Element movie : pagemoviesElems ){
+                if(movie.text().isEmpty()) continue;
                 String name = movie.text();
-                if ( (movie.select(".date").text().isEmpty() == false)
-                        && (movie.select(".date").text().toString().contains("(0)") == false)
-                        && (movie.select(".date").text().toString().length() >= 6)
-                        && (movie.select(".date").text().toString().contains("(0,") == false))
+                String date = movie.select(".date").text();
+                if ( (!date.isEmpty())
+                        && (!date.contains("(0)"))
+                        && (date.length() >= 6)
+                        && (!date.contains("(0,")))
                 {
-                        int year = Integer.parseInt(movie.select(".date").text().substring(1, 5));
-                        String movName = extractName(name).replace("*", "");
-                        logger.info("received " + pagemoviesElems.indexOf(movie) + " movies");
-                        String trashmovUrl = pagemoviesElems.select("a[href]").toString();
-                        String movUrl = BASE_ADDRESS +
+                    int year = Integer.parseInt(date.substring(1, 5));
+                    String movName = extractName(name).replace("*", "");
+                    logger.info("received " + pagemoviesElems.indexOf(movie) + " movies");
+                    String trashmovUrl = movie.select("a[href]").toString();
+                    String movUrl = BASE_ADDRESS +
                             trashmovUrl.substring(trashmovUrl.indexOf("/"), trashmovUrl.indexOf(">") - 2);
-                        List<Soundtrack> sounds = getSounds(movUrl);
-                        if (sounds != null){
-                            String image = getImage(movUrl);
-                            if (image != null) {
-                                Movie curMovie = new Movie(sounds, image, year);
-                                movieLibrary.put(movName, curMovie);
-                            }
+                    logger.info("Current movie is: " + movName);
+                    logger.info("Current movie URL is: " + movUrl);
+                    List<Soundtrack> sounds = getSounds(movUrl);
+                    if (sounds != null){
+                        String image = getImage(movUrl);
+                        if (image != null) {
+                            Movie curMovie = new Movie(sounds, image, year);
+                            movieLibrary.put(movName, curMovie);
                         }
-
+                    }
                 }
-                else{
- //                   logger.info("year of " + extractName(name).replace("*", "")  +  "was not found");
-                }
-
             }
         }
         return movieLibrary;
@@ -144,7 +142,7 @@ public class SoundtracknetParser implements IParser {
             String author="Unknown";
             String name = sound.text();
             System.out.println(name);
-            if (name.indexOf("(") != -1 ){
+            if (name.contains("(")){
                 author = extractYear(name);
                 name = extractName(name);
             }
@@ -156,13 +154,13 @@ public class SoundtracknetParser implements IParser {
 
     private String getImage(String url) throws IOException {
         Document page = connect(url);
-        Elements img = page.select("albumart").select("img");
+        Elements img = page.select(".albumart").select("img");
         if (img.isEmpty()) return null;
         String imgURL = img.first().attr("src");
         String [] URLTokens = imgURL.split("/");
         String filename = Global.SOUNDTRACKNET_PREFIX + URLTokens[URLTokens.length -1 ];
         if (saveImages)
-            saveImage(BASE_ADDRESS + imgURL, filename + ".jpg");
+            saveImage(imgURL, filename);
         return filename;
     }
 
