@@ -3,7 +3,7 @@ package ru.cybern.kinoserver.parsers;
 import ru.cybern.kinoserver.parsers.models.Movie;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.List;
 
 public interface IParser {
 
@@ -13,7 +13,7 @@ public interface IParser {
 
     void setSaveImages(boolean saveImages);
 
-    HashMap<String,Movie> parse(int from, int to) throws IOException;
+    List<Movie> parse(int from, int to) throws IOException;
 
 
 

@@ -11,7 +11,7 @@ import ru.cybern.kinoserver.parsers.IParser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.List;
 
 
 public class ParserWorker extends UntypedActor {
@@ -49,9 +49,9 @@ public class ParserWorker extends UntypedActor {
         if(message instanceof Page) {
             log.info("Path is: " + Global.HOME_PATH + Global.IMG_PATH);
             int page = ((Page) message).getPageNum();
-            HashMap<String,Movie> lib = parser.parse(page, page);
+            List<Movie> movieList = parser.parse(page, page);
             log.info("Page is done");
-            sender().tell(lib, self());
+            sender().tell(movieList, self());
         }
         else
             unhandled(message);

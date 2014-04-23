@@ -15,7 +15,6 @@ import ru.cybern.kinoserver.parsers.models.Soundtrack;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 @Stateless
@@ -48,14 +47,13 @@ public class ParserBean implements IParserBean {
     }
 
     @Override
-    public void update(HashMap<String,Movie> movieLib) {
+    public void update(List<Movie> movieList) {
         Date updateDate = new Date();
-        for(String movieName : movieLib.keySet()) {
-            Movie movie = movieLib.get(movieName);
-            if(filmBean.isExist(movieName, movie.getYear())) continue;
+        for(Movie movie : movieList) {
+            if(filmBean.isExist(movie.getName(), movie.getYear())) continue;
             FilmEntity filmEntity = new FilmEntity();
             filmEntity.setImg(movie.getImgName());
-            filmEntity.setName(movieName);
+            filmEntity.setName(movie.getName());
             filmEntity.setYear(movie.getYear());
             filmEntity.setRating(0.0);
 

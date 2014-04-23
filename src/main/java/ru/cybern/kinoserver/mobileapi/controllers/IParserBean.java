@@ -2,9 +2,9 @@ package ru.cybern.kinoserver.mobileapi.controllers;
 
 import ru.cybern.kinoserver.parsers.models.Movie;
 
-import java.util.HashMap;
+import java.util.List;
 
 public interface IParserBean {
 
-    void update(HashMap<String,Movie> movieLib);
+    void update(List<Movie> movieList);
 }

@@ -12,8 +12,8 @@ import ru.cybern.kinoserver.parsers.IParser;
 import ru.cybern.kinoserver.parsers.models.Movie;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class ParserManager extends UntypedActor {
@@ -71,15 +71,15 @@ public class ParserManager extends UntypedActor {
 
     @Override
     public void onReceive(Object message) throws Exception {
-       if(message instanceof HashMap) {
+       if(message instanceof List) {
             log.info("Received data from Worker: " + sender().toString());
             if(!freePages.isEmpty()) {
                 sender().tell(getFreePage(), getSelf());
             } else {
                 workersCount--;
             }
-            log.info("Gathered Movies: " + ((HashMap) message).size());
-            parserBean.update((HashMap<String,Movie>) message);
+            log.info("Gathered Movies: " + ((List) message).size());
+            parserBean.update((List<Movie>) message);
         }
         else
             unhandled(message);

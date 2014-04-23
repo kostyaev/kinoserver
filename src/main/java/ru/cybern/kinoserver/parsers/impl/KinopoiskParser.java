@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -57,8 +56,8 @@ public class KinopoiskParser implements IParser {
         return doc;
     }
 
-    public HashMap<String,Movie> parse(int from, int to) throws IOException {
-        HashMap<String,Movie> movieLibrary = new HashMap<>();
+    public List<Movie> parse(int from, int to) throws IOException {
+        List<Movie> movieList = new LinkedList<>();
         String startURL;
         Document page;
         startURL =  BASE_ADDRESS + "/lists/ser/%7B\"soundtrack\"%3A\"ok\"%2C\"all\"%3A\"ok\"%2C\"what\"%3A\"content\"%2C\"count\"%3A%7B\"content\"%3A\"2470\"%7D%2C\"order\"%3A\"name\"%2C\"num\"%3A\"1\"%7D/perpage/50/page/";
@@ -77,13 +76,13 @@ public class KinopoiskParser implements IParser {
                 if (gotSounds != null){
                     String image = getImage(movUrl);
                     if (image != null) {
-                        Movie curMovie = new Movie(getSounds(movUrl), image, Integer.parseInt(yearElems.get(j).text()));
-                        movieLibrary.put(movName, curMovie);
+                        Movie curMovie = new Movie(movName, getSounds(movUrl), image, Integer.parseInt(yearElems.get(j).text()));
+                        movieList.add(curMovie);
                     }
                 }
             }
         }
-        return movieLibrary;
+        return movieList;
     }
 
     private static String extractNumber(String str) {

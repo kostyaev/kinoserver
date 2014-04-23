@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -86,8 +85,8 @@ public class SoundtracknetParser implements IParser {
         return null;
     }
 
-    public HashMap<String, Movie> parse(int start,  int end) throws IOException {
-        HashMap<String,Movie> movieLibrary = new HashMap<>();
+    public List<Movie> parse(int start,  int end) throws IOException {
+        List<Movie> movieList = new LinkedList<>();
         String startURL = "http://www.soundtrack.net/albums/?lid=t";
         Document page = connect(startURL);
         Elements pagemoviesElems;
@@ -123,15 +122,13 @@ public class SoundtracknetParser implements IParser {
                     List<Soundtrack> sounds = getSounds(movUrl);
                     if (sounds != null){
                         String image = getImage(movUrl);
-                        if (image != null) {
-                            Movie curMovie = new Movie(sounds, image, year);
-                            movieLibrary.put(movName, curMovie);
-                        }
+                        if (image != null)
+                            movieList.add(new Movie(movName,sounds, image, year));
                     }
                 }
             }
         }
-        return movieLibrary;
+        return movieList;
     }
 
     private  List<Soundtrack> getSounds(String url) throws IOException {
