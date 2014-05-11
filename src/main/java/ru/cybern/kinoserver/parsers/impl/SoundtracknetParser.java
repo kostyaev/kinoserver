@@ -96,7 +96,7 @@ public class SoundtracknetParser implements IParser {
             start = 0;
         if(end > LAST_PAGE_NUMBER)
             end = LAST_PAGE_NUMBER;
-
+int x = 0;
         for (int i = start; i <= end; i++){
             String url = BASE_ADDRESS + "/albums/"+ pageElems.get(i).attr("href");
             page = connect(url);
@@ -113,18 +113,36 @@ public class SoundtracknetParser implements IParser {
                 {
                     int year = Integer.parseInt(date.substring(1, 5));
                     String movName = extractName(name).replace("*", "");
-                    logger.info("received " + pagemoviesElems.indexOf(movie) + " movies");
+                    logger.info("received " + /*pagemoviesElems.indexOf(movie)/3 */ x + " movies");
                     String trashmovUrl = movie.select("a[href]").toString();
                     String movUrl = BASE_ADDRESS +
                             trashmovUrl.substring(trashmovUrl.indexOf("/"), trashmovUrl.indexOf(">") - 2);
-                    logger.info("Current movie is: " + movName);
-                    logger.info("Current movie URL is: " + movUrl);
+      //              logger.info("Current movie is: " + movName);
+      //              logger.info("Current movie URL is: " + movUrl);
                     List<Soundtrack> sounds = getSounds(movUrl);
-                    if (sounds != null){
+      //              boolean z=false;
+                    if ((sounds != null)&&(sounds.size()!=0)){
                         String image = getImage(movUrl);
-                        if (image != null)
+                        if (image != null){
+                            //System.out.println("=====================================================================");
                             movieList.add(new Movie(movName,sounds, image, year));
+                            x++;
+        //                    z=true;
+                        }else{
+                            image = getOldImage(movUrl);
+                            if (image != null){
+                           //     System.out.println("=====================================================================");
+                                movieList.add(new Movie(movName,sounds, image, year));
+                                x++;
+       //                         z = true;
+                            }
+                        }
+
                     }
+        //            if (z = false) logger.info("Current movie is:" + movName   + "\0" + "   " + movUrl );
+                   // System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    //x++;
+
                 }
             }
         }
@@ -138,7 +156,7 @@ public class SoundtracknetParser implements IParser {
         for (Element sound : soundBlocks)  {
             String author="Unknown";
             String name = sound.text();
-            System.out.println(name);
+  //          System.out.println(name);
             if (name.contains("(")){
                 author = extractYear(name);
                 name = extractName(name);
@@ -161,6 +179,20 @@ public class SoundtracknetParser implements IParser {
         return filename;
     }
 
+
+    private String getOldImage(String url) throws IOException {
+        Document page = connect(url);
+        Elements img = page.select(".soundtrackphoto").select("img");
+        if (img.isEmpty()) return null;
+        String imgURL = img.first().attr("src");
+        String [] URLTokens = imgURL.split("/");
+        String filename = Global.SOUNDTRACKNET_PREFIX + URLTokens[URLTokens.length -1 ];
+        if (saveImages)
+            saveImage(imgURL, filename);
+        return filename;
+    }
+
+
     private void saveImage(String imageUrl, String destinationFile) throws IOException {
         File dir = new File(Global.HOME_PATH + Global.IMG_PATH);
         dir.mkdirs();
@@ -168,6 +200,7 @@ public class SoundtracknetParser implements IParser {
         InputStream is = url.openStream();
         OutputStream os = new FileOutputStream(Global.HOME_PATH + Global.IMG_PATH + destinationFile);
         byte[] b = new byte[2048];
+
         int length;
         while ((length = is.read(b)) != -1) {
             os.write(b, 0, length);
