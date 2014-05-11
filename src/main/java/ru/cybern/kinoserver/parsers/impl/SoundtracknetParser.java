@@ -101,7 +101,6 @@ int x = 0;
             String url = BASE_ADDRESS + "/albums/"+ pageElems.get(i).attr("href");
             page = connect(url);
             pagemoviesElems = page.select(".soundtracks-right-table").select("ul").select("a");
-
             for (Element movie : pagemoviesElems ){
                 if(movie.text().isEmpty()) continue;
                 String name = movie.text();
@@ -117,31 +116,25 @@ int x = 0;
                     String trashmovUrl = movie.select("a[href]").toString();
                     String movUrl = BASE_ADDRESS +
                             trashmovUrl.substring(trashmovUrl.indexOf("/"), trashmovUrl.indexOf(">") - 2);
-      //              logger.info("Current movie is: " + movName);
-      //              logger.info("Current movie URL is: " + movUrl);
+                    logger.info("Current movie is: " + movName);
+                    logger.info("Current movie URL is: " + movUrl);
                     List<Soundtrack> sounds = getSounds(movUrl);
-      //              boolean z=false;
                     if ((sounds != null)&&(sounds.size()!=0)){
                         String image = getImage(movUrl);
                         if (image != null){
-                            //System.out.println("=====================================================================");
+
                             movieList.add(new Movie(movName,sounds, image, year));
                             x++;
-        //                    z=true;
                         }else{
                             image = getOldImage(movUrl);
                             if (image != null){
-                           //     System.out.println("=====================================================================");
+
                                 movieList.add(new Movie(movName,sounds, image, year));
                                 x++;
-       //                         z = true;
                             }
                         }
 
                     }
-        //            if (z = false) logger.info("Current movie is:" + movName   + "\0" + "   " + movUrl );
-                   // System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                    //x++;
 
                 }
             }
