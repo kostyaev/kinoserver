@@ -27,8 +27,6 @@ public class KinopoiskParser implements IParser {
 
     private static final String BASE_ADDRESS = "http://www.kinopoisk.ru";
 
-
-
     private boolean saveImages;
 
     public KinopoiskParser(boolean saveImages) {

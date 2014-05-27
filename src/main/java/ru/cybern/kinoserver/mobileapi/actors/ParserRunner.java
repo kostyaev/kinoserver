@@ -13,6 +13,7 @@ import ru.cybern.kinoserver.parsers.impl.WhatsongParser;
 
 import javax.ejb.Singleton;
 import javax.inject.Inject;
+import java.io.IOException;
 
 @Singleton
 public class ParserRunner {
@@ -23,7 +24,12 @@ public class ParserRunner {
     private final static int NUM_OF_THREADS = 10;
 
     public void startKinopoisk() {
-        int pageCnt = 2;
+        int pageCnt = 0;
+        try {
+            pageCnt = KinopoiskParser.getLastPageNumber();
+        } catch (IOException e) {
+            pageCnt = 50;
+        }
         ActorSystem system = ActorSystem.create("parsers");
         ActorRef a = system.actorOf(ParserManager.props(parserBean, new KinopoiskParser(true),
                 NUM_OF_THREADS, pageCnt), "kinopoiskManager");

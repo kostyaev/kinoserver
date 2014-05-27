@@ -1,13 +1,14 @@
 package ru.cybern.kinoserver.parsers;
 
-import ru.cybern.kinoserver.parsers.impl.SoundtracknetParser;
+import ru.cybern.kinoserver.parsers.impl.KinopoiskParser;
 
 import java.io.IOException;
 
 public class testRunner {
     public static void main(String [] args) throws IOException {
-        SoundtracknetParser parser = new SoundtracknetParser(true);
-        parser.parse(1,1);
+        System.out.println(KinopoiskParser.getLastPageNumber());
+        KinopoiskParser parser = new KinopoiskParser(true);
+        parser.parse(1,2);
 
     }
 }

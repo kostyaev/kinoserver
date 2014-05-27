@@ -13,9 +13,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.util.Date;
 
-/**
- * Created by virtuozzo on 19.02.14.
- */
+
 @Entity
 @Table(name = "film_history", schema = "public", catalog = "kinoserver")
 public class FilmHistoryEntity {

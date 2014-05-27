@@ -96,7 +96,7 @@ public class SoundtracknetParser implements IParser {
             start = 0;
         if(end > LAST_PAGE_NUMBER)
             end = LAST_PAGE_NUMBER;
-int x = 0;
+        int x = 0;
         for (int i = start; i <= end; i++){
             String url = BASE_ADDRESS + "/albums/"+ pageElems.get(i).attr("href");
             page = connect(url);
@@ -112,7 +112,7 @@ int x = 0;
                 {
                     int year = Integer.parseInt(date.substring(1, 5));
                     String movName = extractName(name).replace("*", "");
-                    logger.info("received " + /*pagemoviesElems.indexOf(movie)/3 */ x + " movies");
+                    logger.info("received " + x + " movies");
                     String trashmovUrl = movie.select("a[href]").toString();
                     String movUrl = BASE_ADDRESS +
                             trashmovUrl.substring(trashmovUrl.indexOf("/"), trashmovUrl.indexOf(">") - 2);
@@ -149,7 +149,7 @@ int x = 0;
         for (Element sound : soundBlocks)  {
             String author="Unknown";
             String name = sound.text();
-  //          System.out.println(name);
+            //          System.out.println(name);
             if (name.contains("(")){
                 author = extractYear(name);
                 name = extractName(name);
