@@ -185,7 +185,6 @@ public class MobileService {
 
         Update update = new Update();
         update.setFilmMusic(filmMusic);
-        update.setUpdateDate(new Date());
         update.setMethod(Update.Method.ADD);
 
         return update;
@@ -222,6 +221,7 @@ public class MobileService {
 
         UpdateResponse updates = new UpdateResponse();
         updates.setUpdates(updateList);
+        updates.setUpdateDate(new Date());
 
         return updates;
     }

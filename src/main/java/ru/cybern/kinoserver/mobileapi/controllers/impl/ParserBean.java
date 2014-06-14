@@ -1,5 +1,6 @@
 package ru.cybern.kinoserver.mobileapi.controllers.impl;
 
+import org.apache.log4j.Logger;
 import ru.cybern.kinoserver.mobileapi.controllers.IFilmBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IMusicBean;
 import ru.cybern.kinoserver.mobileapi.controllers.IParserBean;
@@ -26,6 +27,8 @@ public class ParserBean implements IParserBean {
     @Inject
     IMusicBean musicBean;
 
+    private static final Logger logger = Logger.getLogger(ParserBean.class);
+
     private void addMusic(List<Soundtrack> sounds, FilmEntity film) {
         for(Soundtrack sound : sounds) {
 
@@ -49,6 +52,7 @@ public class ParserBean implements IParserBean {
     @Override
     public void update(List<Movie> movieList) {
         Date updateDate = new Date();
+        logger.info("Update time is: " + updateDate.getTime());
         for(Movie movie : movieList) {
             if(filmBean.isExist(movie.getName(), movie.getYear())) continue;
             FilmEntity filmEntity = new FilmEntity();
