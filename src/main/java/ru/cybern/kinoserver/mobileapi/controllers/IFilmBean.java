@@ -36,6 +36,8 @@ public interface IFilmBean {
 
     List<FilmHistoryEntity> getFilmHistoryAfterDateByMethod(Date date, Method method);
 
+    List<FilmHistoryEntity> getFilmHistoryAfterDateByMethod(Date date, Method method, int limit, int offset);
+
     FilmMusicEntity saveFilmMusic(FilmMusicEntity filmMusic);
 
     void deleteFilmMusic(FilmMusicEntity filmMusic);

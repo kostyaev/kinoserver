@@ -1,6 +1,6 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-public class Music {
+public class Music implements MyResponse {
 
     private Integer id;
     private String name;

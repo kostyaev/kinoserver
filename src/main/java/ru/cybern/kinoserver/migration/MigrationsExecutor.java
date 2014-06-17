@@ -28,7 +28,7 @@ public class MigrationsExecutor {
 	
 	private static final String MIGRATIONS_FILE = "migrations.xml";
 	
-	@Resource(mappedName = "java:jboss/datasources/PostgreSQLDS")
+	@Resource(mappedName = "java:/kinods")
 	private DataSource dataSource;
 	
 	@PostConstruct

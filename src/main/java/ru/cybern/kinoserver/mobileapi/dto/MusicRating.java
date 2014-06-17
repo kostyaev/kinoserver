@@ -2,7 +2,7 @@ package ru.cybern.kinoserver.mobileapi.dto;
 
 import java.util.Date;
 
-public class MusicRating {
+public class MusicRating implements MyResponse {
 
     private Integer id;
 

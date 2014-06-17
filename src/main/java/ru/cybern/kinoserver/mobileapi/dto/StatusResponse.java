@@ -1,6 +1,6 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-public class StatusResponse {
+public class StatusResponse implements MyResponse {
 
     public static enum ResponseStatus {OK, FAIL}
 

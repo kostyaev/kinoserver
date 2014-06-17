@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class UpdateResponse {
+public class UpdateResponse implements MyResponse {
 
     private List<Update> updates;
 

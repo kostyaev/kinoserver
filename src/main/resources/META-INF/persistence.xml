@@ -26,7 +26,7 @@
         <!-- The datasource is deployed as WEB-INF/acme-sales-ds.xml, you
            can find it in the source at src/main/webapp/WEB-INF/acme-sales-ds.xml -->
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <jta-data-source>java:jboss/datasources/PostgreSQLDS</jta-data-source>
+        <jta-data-source>java:/kinods</jta-data-source>
         <properties>
             <!-- Properties for Hibernate -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />

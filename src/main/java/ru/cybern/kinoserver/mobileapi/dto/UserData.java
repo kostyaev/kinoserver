@@ -2,7 +2,7 @@ package ru.cybern.kinoserver.mobileapi.dto;
 
 import java.util.List;
 
-public class UserData {
+public class UserData implements MyResponse {
 
     private List<Favorites> favorites;
 

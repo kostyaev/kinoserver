@@ -104,6 +104,11 @@ public class FilmBean implements IFilmBean {
     }
 
     @Override
+    public List<FilmHistoryEntity> getFilmHistoryAfterDateByMethod(Date date, Method method, int limit, int offset) {
+        return  historyDAO.getAfterDateByMethod(date, method, limit, offset);
+    }
+
+    @Override
     public FilmMusicEntity saveFilmMusic(FilmMusicEntity filmMusic) {
         return filmMusicDAO.save(filmMusic);
     }

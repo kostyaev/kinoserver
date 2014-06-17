@@ -32,4 +32,15 @@ public class FilmHistoryDAO extends HibernateGenericDAO<FilmHistoryEntity, Integ
 
     }
 
+    @Override
+    public List<FilmHistoryEntity> getAfterDateByMethod(Date date, Method method, int limit, int offset) {
+        return  createCriteria()
+                .add(Restrictions.gt("dateTime", date))
+                .add(Restrictions.eq("method", method.name()))
+                .setMaxResults(limit)
+                .setFirstResult(offset)
+                .list();
+
+    }
+
 }

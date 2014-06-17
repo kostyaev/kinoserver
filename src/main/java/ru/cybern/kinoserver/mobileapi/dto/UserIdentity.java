@@ -1,9 +1,7 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-/**
- * Created by virtuozzo on 14.02.14.
- */
-public class UserIdentity {
+
+public class UserIdentity implements MyResponse{
     private long id;
 
     public long getId() {

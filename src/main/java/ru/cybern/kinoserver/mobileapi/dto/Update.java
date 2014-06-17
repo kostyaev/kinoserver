@@ -3,7 +3,7 @@ package ru.cybern.kinoserver.mobileapi.dto;
 import java.util.List;
 
 
-public class Update {
+public class Update implements MyResponse {
 
     public static enum Method {ADD, DELETE, UPDATE}
     private Method method;

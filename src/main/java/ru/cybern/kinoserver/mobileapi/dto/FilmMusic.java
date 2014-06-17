@@ -1,6 +1,6 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-public class FilmMusic {
+public class FilmMusic implements MyResponse {
 
     private Integer id;
     private Film film;

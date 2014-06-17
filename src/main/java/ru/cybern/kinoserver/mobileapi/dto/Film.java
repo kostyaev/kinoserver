@@ -1,6 +1,6 @@
 package ru.cybern.kinoserver.mobileapi.dto;
 
-public class Film {
+public class Film implements MyResponse {
 
     private Integer id;
     private String name;

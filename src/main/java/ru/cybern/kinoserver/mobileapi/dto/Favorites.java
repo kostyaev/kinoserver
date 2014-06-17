@@ -3,7 +3,7 @@ package ru.cybern.kinoserver.mobileapi.dto;
 import java.util.Date;
 
 
-public class Favorites {
+public class Favorites implements MyResponse {
 
     private Integer id;
     private User user;

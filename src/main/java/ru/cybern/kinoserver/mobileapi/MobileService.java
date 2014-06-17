@@ -14,11 +14,13 @@ import ru.cybern.kinoserver.mobileapi.db.entities.MusicEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.MusicRatingEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.PerformerEntity;
 import ru.cybern.kinoserver.mobileapi.db.entities.UserEntity;
+import ru.cybern.kinoserver.mobileapi.dto.ErrorResponse;
 import ru.cybern.kinoserver.mobileapi.dto.Favorites;
 import ru.cybern.kinoserver.mobileapi.dto.Film;
 import ru.cybern.kinoserver.mobileapi.dto.FilmMusic;
 import ru.cybern.kinoserver.mobileapi.dto.Music;
 import ru.cybern.kinoserver.mobileapi.dto.MusicRating;
+import ru.cybern.kinoserver.mobileapi.dto.MyResponse;
 import ru.cybern.kinoserver.mobileapi.dto.Performer;
 import ru.cybern.kinoserver.mobileapi.dto.StatusResponse;
 import ru.cybern.kinoserver.mobileapi.dto.Update;
@@ -40,6 +42,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.text.DateFormat;
@@ -73,6 +76,8 @@ public class MobileService {
     ParserRunner manager;
 
     public static final Long INIT_DATE = 671534305000L;
+
+    public static final int LIMIT = 100;
 
     public Performer getPerformerFrom(PerformerEntity performerEntity) {
         Performer performer = new Performer();
@@ -202,15 +207,21 @@ public class MobileService {
         return parsedDate;
     }
 
+
     @GET
-    @Path("update/{date}")
-    public UpdateResponse getUpdates(@PathParam("date") Long date) {
+    @Path("update")
+    public MyResponse getUpdates(@PathParam("date") Long date, @QueryParam("limit") int limit, @QueryParam("offset") int offset) {
+        if (limit > 100)
+            return ErrorResponse.LIMIT_EXCEEDED;
         Date lastUpdate = new Date(date);
-        List<FilmHistoryEntity> addHistories = filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.ADD);
+        List<FilmHistoryEntity> addHistories =
+                filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.ADD, limit, offset);
         Update additions = getUpdates(addHistories);
-        List<FilmHistoryEntity> deleteHistories = filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.DELETE);
+        List<FilmHistoryEntity> deleteHistories =
+                filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.DELETE, limit, offset);
         Update deletions = getUpdates(deleteHistories);
-        List<FilmHistoryEntity> updateHistories = filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.UPDATE);
+        List<FilmHistoryEntity> updateHistories =
+                filmBean.getFilmHistoryAfterDateByMethod(lastUpdate, Method.UPDATE, limit, offset);
         Update corrections = getUpdates(updateHistories);
 
         List<Update> updateList = new LinkedList<>();
@@ -221,15 +232,14 @@ public class MobileService {
 
         UpdateResponse updates = new UpdateResponse();
         updates.setUpdates(updateList);
-        updates.setUpdateDate(new Date());
 
         return updates;
     }
 
     @GET
     @Path("update")
-    public UpdateResponse getAllUpdates() {
-        return getUpdates(INIT_DATE);
+    public MyResponse getAllUpdates(@QueryParam("limit") int limit, @QueryParam("offset") int offset) {
+        return getUpdates(INIT_DATE, limit, offset);
     }
 
     @GET
