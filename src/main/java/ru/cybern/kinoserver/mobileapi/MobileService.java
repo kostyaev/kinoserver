@@ -230,6 +230,7 @@ public class MobileService {
 
         UpdateResponse updates = new UpdateResponse();
         updates.setUpdates(updateList);
+        updates.setUpdateDate(lastUpdate);
 
         return updates;
     }
