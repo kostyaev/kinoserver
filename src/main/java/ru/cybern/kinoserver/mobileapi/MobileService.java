@@ -77,8 +77,6 @@ public class MobileService {
 
     public static final Long INIT_DATE = 671534305000L;
 
-    public static final int LIMIT = 100;
-
     public Performer getPerformerFrom(PerformerEntity performerEntity) {
         Performer performer = new Performer();
         performer.setId(performerEntity.getId());
@@ -209,7 +207,7 @@ public class MobileService {
 
 
     @GET
-    @Path("update")
+    @Path("update/{date}")
     public MyResponse getUpdates(@PathParam("date") Long date, @QueryParam("limit") int limit, @QueryParam("offset") int offset) {
         if (limit > 100)
             return ErrorResponse.LIMIT_EXCEEDED;
